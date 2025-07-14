@@ -17,12 +17,18 @@ const awardsCertificates = ref([])
 const educationCareer = ref([])
 const coreValues = ref([])
 
+// 취소/리셋 기능을 위한 상태
+const showResetButton = ref(false)
+
 function handleScroll() {
   const el = mainContainer.value
   if (!el) return
   const scrollY = el.scrollTop
   const docHeight = el.scrollHeight - el.clientHeight
   const progress = docHeight > 0 ? Math.min(scrollY / docHeight, 1) : 0
+
+  // 스크롤 위치에 따라 리셋 버튼 표시/숨김
+  showResetButton.value = scrollY > 200
 
   // 100단계로 부드러운 위스키 그라데이션 생성
   let stops = ['white 0%']
@@ -61,6 +67,26 @@ async function fetchAll() {
   }
 }
 
+// 취소/리셋 기능: 처음 상태로 돌아가기
+function resetToInitial() {
+  const el = mainContainer.value
+  if (!el) return
+  
+  // 부드러운 스크롤로 맨 위로 이동
+  el.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+  
+  // 애니메이션 상태 초기화
+  setTimeout(() => {
+    sectionVisible.value = [false, false, false]
+    backgroundGradient.value = 'white'
+    glassRotation.value = 'translateY(-50%) rotate(0deg)'
+    showResetButton.value = false
+  }, 100)
+}
+
 onMounted(() => {
   fetchAll()
   if (mainContainer.value) {
@@ -90,6 +116,15 @@ onUnmounted(() => {
       alt="위스키 잔"
       :style="{ transform: glassRotation }"
     />
+    <!-- 취소/리셋 버튼 -->
+    <button 
+      v-if="showResetButton"
+      class="reset-button"
+      @click="resetToInitial"
+      title="처음으로 돌아가기"
+    >
+      ↑ 취소
+    </button>
     <!-- Content Sections -->
     <section class="section about" :class="{ visible: sectionVisible[0] }">
       <div class="about-flex">
@@ -269,6 +304,32 @@ onUnmounted(() => {
   height: auto;
   z-index: 10;
   object-fit: cover;
+}
+.reset-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(176, 122, 58, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(176, 122, 58, 0.3);
+  font-family: 'Nanum Gothic', sans-serif;
+}
+.reset-button:hover {
+  background: rgba(176, 122, 58, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(176, 122, 58, 0.4);
+}
+.reset-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(176, 122, 58, 0.3);
 }
 .intro-block {
   max-width: 900px;
@@ -506,6 +567,12 @@ onUnmounted(() => {
     margin-left: 2vw;
     padding: 32px 16px 24px 16px;
   }
+  .reset-button {
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
 }
 @media (max-width: 600px) {
   .whiskey-glass {
@@ -519,6 +586,12 @@ onUnmounted(() => {
   .section {
     margin-left: 0;
     padding: 18px 6px 12px 6px;
+  }
+  .reset-button {
+    bottom: 15px;
+    right: 15px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
   }
 }
 </style>
