@@ -715,14 +715,27 @@ onUnmounted(() => {
   .whiskey-glass {
     width: 120px;
     right: 2vw;
+    filter: drop-shadow(0 2px 12px rgba(176,122,58,0.2));
   }
   .intro-block {
     margin-left: 2vw;
-    font-size: 1.3rem;
+    font-size: 1.8rem;
+    padding: 0 16px;
   }
   .section {
     margin-left: 2vw;
-    padding: 32px 16px 24px 16px;
+    padding: 40px 24px 32px 24px;
+  }
+  .section-flex {
+    gap: 24px;
+  }
+  .section-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 2.2rem;
+  }
+  .about-flex {
+    gap: 24px;
   }
 }
 @media (max-width: 600px) {
@@ -731,12 +744,41 @@ onUnmounted(() => {
   }
   .intro-block {
     margin-left: 0;
-    font-size: 1.1rem;
+    font-size: 1.6rem;
     min-height: 60vh;
+    padding: 0 12px;
   }
   .section {
     margin-left: 0;
-    padding: 18px 6px 12px 6px;
+    padding: 24px 16px 20px 16px;
+    margin-bottom: 50vh;
+  }
+  .section-flex {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .section-icon {
+    align-self: center;
+  }
+  .about-flex {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+  .about-left {
+    flex: none;
+  }
+  .about-right {
+    text-align: center;
+  }
+  .about-interests-list {
+    gap: 12px;
+  }
+  .exp-table {
+    font-size: 0.9rem;
+  }
+  .exp-table th, .exp-table td {
+    padding: 8px 4px;
   }
 }
 </style>
