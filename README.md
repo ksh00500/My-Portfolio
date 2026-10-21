@@ -10,7 +10,7 @@ Prerequisites: existing running `portfolio-postgres` container accessible on ext
 
 ```bash
 # From a newly cloned/refactored working directory
-cp .env.example .env
+test -f .env || cp .env.example .env
 # Edit .env using an editor. Do not print credentials in terminal logs.
 # Set DATABASE_URL with URL-encoded password, ADMIN_PASSWORD and SESSION_SECRET (>=32 chars).
 # Example format: postgresql://portfolio_admin:<URL_ENCODED_PASSWORD>@portfolio-postgres:5432/portfolio
@@ -25,7 +25,7 @@ npm run db:verify
 
 # Build and run ONLY the web container, bound to host loopback
 # Existing database container and volume are not touched.
-docker compose config
+docker compose config --quiet
 docker compose up -d --build web
 
 docker compose ps
