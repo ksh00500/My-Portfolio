@@ -78,9 +78,11 @@ export async function getPortfolioData():Promise<PortfolioData>{
   publicAssetLinks(),readPublic<{key:string;ko:string|null;en:string|null}>('site_content',['display_order','key'])
  ]);
  const projects=projectsRaw.map(normalProject),technologies=technologiesRaw.map(normalTechnology);
+ // Avoid accessing ids while the object is still being initialized.
+ const experienceIds=new Set(experiences.map(e=>String(e.id)));
  const ids={profile:new Set(profilesRaw.map(p=>String(p.id))),project:new Set(projects.map(p=>p.id)),
-  experience:new Set(experiences.map(e=>String(e.id))),recognition:new Set(recognitions.map(r=>String(r.id))),
-  certification:new Set(certifications.filter(c=>c.status==='acquired'&&(!c.experience_id||ids.experience.has(String(c.experience_id)))).map(c=>String(c.id)))};
+  experience:experienceIds,recognition:new Set(recognitions.map(r=>String(r.id))),
+  certification:new Set(certifications.filter(c=>c.status==='acquired'&&(!c.experience_id||experienceIds.has(String(c.experience_id)))).map(c=>String(c.id)))};
  // If a recognition references a hidden project, its public projection must not leak it.
  const publicRecognitions=recognitions.filter(r=>(!r.related_project_id||ids.project.has(String(r.related_project_id)))&&(!r.experience_id||ids.experience.has(String(r.experience_id))));
  ids.recognition=new Set(publicRecognitions.map(r=>String(r.id)));
