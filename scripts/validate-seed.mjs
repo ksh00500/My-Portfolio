@@ -1,0 +1,12 @@
+import {readFileSync} from 'node:fs';
+const d=JSON.parse(readFileSync(new URL('../seed/source-data.json',import.meta.url),'utf8'));
+const expected={projects:19,technologies:27,recognitions:8,leadership:9,programs:31,education:2,employment:1,certifications:1,project_metrics:4};
+for(const [key,value] of Object.entries(expected))if(d[key]?.length!==value)throw Error(`${key}: expected ${value}, got ${d[key]?.length}`);
+const slugs=new Set(d.projects.map(p=>p.slug));
+const names=new Set(d.technologies.map(t=>t.name));
+if(slugs.size!==d.projects.length||names.size!==d.technologies.length)throw Error('Duplicate slug or technology name');
+for(const t of d.technologies)for(const slug of t.linked_project_slugs||[])if(!slugs.has(slug))throw Error(`Unknown project ${slug} for tech ${t.name}`);
+if(d.projects.filter(p=>p.is_featured).length!==1)throw Error('Expected exactly one featured project');
+if(d.projects.find(p=>p.is_featured)?.slug!=='senro')throw Error('Expected SENRO as current featured project');
+for(const r of d.project_metrics)if(!d.projects.some(p=>p.id===r.project_id))throw Error(`Unknown project for metric ${r.metric_key}`);
+console.log('Seed checks passed:',Object.fromEntries(Object.keys(expected).map(k=>[k,d[k].length])), 'confirmed links',d.technologies.reduce((n,t)=>n+(t.linked_project_slugs||[]).length,0));

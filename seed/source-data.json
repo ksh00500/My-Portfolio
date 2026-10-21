@@ -1,0 +1,1230 @@
+{
+  "profile": {
+    "name_ko": "김시호",
+    "name_en": "KIM SIHO",
+    "headline": "SOFTWARE DEVELOPER / PRODUCT BUILDER",
+    "school_name": "연성대학교",
+    "department": "컴퓨터소프트웨어과",
+    "current_grade": 3,
+    "github_url": "https://github.com/ksh00500",
+    "keyda_url": "https://keyda.site/",
+    "primary_product_url": "https://senro.site/",
+    "email": null
+  },
+  "projects": [
+    {
+      "id": "project-01",
+      "slug": "senro",
+      "name": "SENRO",
+      "summary_ko": "단독 기획·개발·배포·운영한 실시간 웹·Android 게임. AI 대전 엔진 제공.",
+      "summary_en": "A real-time web and Android game independently planned, built, launched, and operated, featuring an AI opponent.",
+      "status": "operating",
+      "started_at": "2026-06-16",
+      "started_month": null,
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Product",
+      "is_featured": true,
+      "is_public": true,
+      "source_code_visibility": "private",
+      "github_url": null,
+      "live_url": "https://senro.site/",
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 1,
+      "key_contributions": null,
+      "role": "단독 기획·개발·운영"
+    },
+    {
+      "id": "project-02",
+      "slug": "mungsil",
+      "name": "뭉실 (MUNGSIL)",
+      "summary_ko": "TODO와 SNS를 결합한 서비스. Next.js·NestJS 기반 재개발 중이며 미출시.",
+      "summary_en": "A to-do and social product being rebuilt with Next.js and NestJS; not yet launched.",
+      "status": "developing",
+      "started_at": "2026-07-22",
+      "started_month": null,
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Product",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 2,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-03",
+      "slug": "keyda",
+      "name": "KeyDa",
+      "summary_ko": "KeyDa의 PlayStudio와 AIStudio를 연결하는 브랜드 플랫폼.",
+      "summary_en": "A brand platform connecting KeyDa PlayStudio and AIStudio.",
+      "status": "operating",
+      "started_at": "2026-10-15",
+      "started_month": null,
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Product",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": "https://keyda.site/",
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 3,
+      "key_contributions": null,
+      "role": null,
+      "brand_started_at": "2026-10-18"
+    },
+    {
+      "id": "project-04",
+      "slug": "murim-roguelike",
+      "name": "무협 로그라이크 (가칭)",
+      "summary_ko": "Phaser 3와 TypeScript 기반 무협 로그라이크 개발 프로젝트.",
+      "summary_en": "A martial-arts roguelike game project built with Phaser 3 and TypeScript.",
+      "status": "developing",
+      "started_at": "2026-09-27",
+      "started_month": null,
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Personal",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 4,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-05",
+      "slug": "ysu-cloud-mlops",
+      "name": "YSU Cloud MLOps",
+      "summary_ko": "4인 팀의 모델 비교·평가 및 FastAPI 추론 API 개발 과제.",
+      "summary_en": "A four-person academic project for model comparison, evaluation, and a FastAPI inference API.",
+      "status": "developing",
+      "started_at": "2026-09-16",
+      "started_month": null,
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": "2026-11",
+      "project_type": "Academic",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 5,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-06",
+      "slug": "fresk",
+      "name": "FRESK",
+      "summary_ko": "전자코와 카메라를 활용하는 육류 신선도 분석 아이템. G-HOP 창업캠프 최우수상.",
+      "summary_en": "A startup concept for meat freshness analysis using an electronic nose and camera; recognized at G-HOP.",
+      "status": "planning",
+      "started_at": "2026-09-11",
+      "started_month": null,
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Startup",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 6,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-07",
+      "slug": "skillmcp",
+      "name": "SkillMCP",
+      "summary_ko": "OpenAI WebMCP Challenge 출품을 위해 MCP/WebMCP 기능 구현. 대회 결과 발표 후 운영 종료.",
+      "summary_en": "Built MCP/WebMCP capabilities for an OpenAI WebMCP challenge submission; operation ended afterward.",
+      "status": "closed",
+      "started_at": "2026-09-04",
+      "started_month": null,
+      "ended_at": "2026-09-29",
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Competition",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 7,
+      "key_contributions": null,
+      "role": null,
+      "end_date_estimated": true
+    },
+    {
+      "id": "project-08",
+      "slug": "postit-meeting",
+      "name": "Postit Meeting",
+      "summary_ko": "Fastify·Socket.IO·SQLite 기반 실시간 포스트잇·투표·타이머 도구.",
+      "summary_en": "A real-time sticky-note, polling and timer tool built with Fastify, Socket.IO and SQLite.",
+      "status": "completed",
+      "started_at": "2026-09-09",
+      "started_month": null,
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Personal",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 8,
+      "key_contributions": null,
+      "role": null,
+      "period_note_ko": "2026년 9~10월 실제 회의에서 사용",
+      "period_note_en": "Used in real meetings during September–October 2026"
+    },
+    {
+      "id": "project-09",
+      "slug": "setstop",
+      "name": "SetStop",
+      "summary_ko": "2026 축제 게임 개발. 팀장으로 타이머·디메리트·닉네임 랭킹 주요 기능 구현.",
+      "summary_en": "A 2026 festival game; led development of timers, demerits, and nickname rankings.",
+      "status": "completed",
+      "started_at": "2026-08-03",
+      "started_month": null,
+      "ended_at": "2026-10-16",
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Team",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 9,
+      "key_contributions": null,
+      "role": "팀장"
+    },
+    {
+      "id": "project-10",
+      "slug": "code-review-site",
+      "name": "코드 리뷰 사이트",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "developing",
+      "started_at": null,
+      "started_month": "2026-06",
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "month",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Personal",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 10,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-11",
+      "slug": "florence",
+      "name": "Florence",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "completed",
+      "started_at": "2026-05-12",
+      "started_month": null,
+      "ended_at": "2026-06-30",
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Personal",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 11,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-12",
+      "slug": "blueprinter",
+      "name": "BluePrinter",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "completed",
+      "started_at": null,
+      "started_month": "2026-03",
+      "ended_at": null,
+      "ended_month": "2026-06",
+      "date_precision": "month",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Capstone",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 12,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-13",
+      "slug": "nrc-ddss",
+      "name": "NRC테크 DDSS DB화",
+      "summary_ko": "MSSQL 기반 업무 데이터 설계·전처리·마이그레이션. 회사 내부 자료 및 소스코드는 비공개.",
+      "summary_en": "Work-related MSSQL data design, preprocessing and migration. Internal source code and files are private.",
+      "status": "completed",
+      "started_at": "2026-01-07",
+      "started_month": null,
+      "ended_at": "2026-02-28",
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Work",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "private",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 13,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-14",
+      "slug": "web-chess",
+      "name": "웹 체스 게임",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "completed",
+      "started_at": "2025-09-15",
+      "started_month": null,
+      "ended_at": "2025-09-30",
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Personal",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 14,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-15",
+      "slug": "portfolio-aws",
+      "name": "포트폴리오 AWS 고도화",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "completed",
+      "started_at": "2025-08-02",
+      "started_month": null,
+      "ended_at": "2025-08-31",
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Personal",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 15,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-16",
+      "slug": "cannonball",
+      "name": "CannonBall",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "completed",
+      "started_at": "2025-07-16",
+      "started_month": null,
+      "ended_at": "2025-08-31",
+      "ended_month": null,
+      "date_precision": "exact",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Personal",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 16,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-17",
+      "slug": "order-kiosk",
+      "name": "주문 키오스크",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "completed",
+      "started_at": null,
+      "started_month": "2025-03",
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "month",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Academic",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 17,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-18",
+      "slug": "timetable-generator",
+      "name": "시간표 생성기",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "completed",
+      "started_at": null,
+      "started_month": "2024-11",
+      "ended_at": null,
+      "ended_month": "2024-12",
+      "date_precision": "month",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Academic",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 18,
+      "key_contributions": null,
+      "role": null
+    },
+    {
+      "id": "project-19",
+      "slug": "first-portfolio",
+      "name": "개인 포트폴리오 사이트",
+      "summary_ko": null,
+      "summary_en": null,
+      "status": "completed",
+      "started_at": null,
+      "started_month": "2024-11",
+      "ended_at": null,
+      "ended_month": null,
+      "date_precision": "month",
+      "planned_end_at": null,
+      "planned_end_month": null,
+      "project_type": "Personal",
+      "is_featured": false,
+      "is_public": true,
+      "source_code_visibility": "unavailable",
+      "github_url": null,
+      "live_url": null,
+      "media_assets": [],
+      "evidence_url": null,
+      "source_notion_id": null,
+      "display_order": 19,
+      "key_contributions": null,
+      "role": null
+    }
+  ],
+  "project_metrics": [
+    {
+      "project_id": "project-01",
+      "metric_key": "total_users",
+      "display_value": "500+",
+      "comparison": "minimum",
+      "name_ko": "누적 이용자",
+      "name_en": "Total users"
+    },
+    {
+      "project_id": "project-01",
+      "metric_key": "signups",
+      "display_value": "36",
+      "comparison": "exact",
+      "name_ko": "가입자",
+      "name_en": "Sign-ups"
+    },
+    {
+      "project_id": "project-01",
+      "metric_key": "downloads",
+      "display_value": "15",
+      "comparison": "exact",
+      "name_ko": "앱 다운로드",
+      "name_en": "App downloads"
+    },
+    {
+      "project_id": "project-01",
+      "metric_key": "installed_users",
+      "display_value": "12",
+      "comparison": "exact",
+      "name_ko": "설치 유지 인원",
+      "name_en": "Current installs"
+    }
+  ],
+  "technologies": [
+    {
+      "id": "tech-01",
+      "name": "Java",
+      "category": "Language",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 1
+    },
+    {
+      "id": "tech-02",
+      "name": "Python",
+      "category": "Language",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 2
+    },
+    {
+      "id": "tech-03",
+      "name": "TypeScript · JavaScript",
+      "category": "Language",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "murim-roguelike"
+      ],
+      "display_order": 3
+    },
+    {
+      "id": "tech-04",
+      "name": "FastAPI",
+      "category": "Web & Frameworks",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "ysu-cloud-mlops"
+      ],
+      "display_order": 4
+    },
+    {
+      "id": "tech-05",
+      "name": "HTML / CSS",
+      "category": "Web & Frameworks",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 5
+    },
+    {
+      "id": "tech-06",
+      "name": "NestJS",
+      "category": "Web & Frameworks",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "mungsil"
+      ],
+      "display_order": 6
+    },
+    {
+      "id": "tech-07",
+      "name": "Next.js",
+      "category": "Web & Frameworks",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "mungsil"
+      ],
+      "display_order": 7
+    },
+    {
+      "id": "tech-08",
+      "name": "Node.js · Fastify",
+      "category": "Web & Frameworks",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "postit-meeting"
+      ],
+      "display_order": 8
+    },
+    {
+      "id": "tech-09",
+      "name": "React",
+      "category": "Web & Frameworks",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 9
+    },
+    {
+      "id": "tech-10",
+      "name": "Socket.IO",
+      "category": "Web & Frameworks",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "postit-meeting"
+      ],
+      "display_order": 10
+    },
+    {
+      "id": "tech-11",
+      "name": "Vue.js",
+      "category": "Web & Frameworks",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 11
+    },
+    {
+      "id": "tech-12",
+      "name": "Spring Boot",
+      "category": "Web & Frameworks",
+      "proficiency": "learning",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 12
+    },
+    {
+      "id": "tech-13",
+      "name": "Android · Capacitor",
+      "category": "Mobile",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 13
+    },
+    {
+      "id": "tech-14",
+      "name": "MSSQL",
+      "category": "Database",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "nrc-ddss"
+      ],
+      "display_order": 14
+    },
+    {
+      "id": "tech-15",
+      "name": "MySQL",
+      "category": "Database",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 15
+    },
+    {
+      "id": "tech-16",
+      "name": "PostgreSQL",
+      "category": "Database",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 16
+    },
+    {
+      "id": "tech-17",
+      "name": "Prisma ORM",
+      "category": "Database",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 17
+    },
+    {
+      "id": "tech-18",
+      "name": "AWS (EC2 · S3 · RDS · Lambda)",
+      "category": "Cloud & Infrastructure",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 18
+    },
+    {
+      "id": "tech-19",
+      "name": "Docker · Nginx",
+      "category": "Cloud & Infrastructure",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 19
+    },
+    {
+      "id": "tech-20",
+      "name": "Linux",
+      "category": "Cloud & Infrastructure",
+      "proficiency": "learning",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 20
+    },
+    {
+      "id": "tech-21",
+      "name": "Git · GitHub",
+      "category": "Collaboration",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 21
+    },
+    {
+      "id": "tech-22",
+      "name": "Notion · Slack",
+      "category": "Collaboration",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 22
+    },
+    {
+      "id": "tech-23",
+      "name": "Adobe Photoshop · Illustrator · XD",
+      "category": "Design",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 23
+    },
+    {
+      "id": "tech-24",
+      "name": "MCP · WebMCP",
+      "category": "AI & Agents",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "skillmcp"
+      ],
+      "display_order": 24
+    },
+    {
+      "id": "tech-25",
+      "name": "Phaser 3",
+      "category": "Game Development",
+      "proficiency": "usable",
+      "is_public": true,
+      "linked_project_slugs": [
+        "murim-roguelike"
+      ],
+      "display_order": 25
+    },
+    {
+      "id": "tech-26",
+      "name": "LightGBM · XGBoost",
+      "category": "Data & ML",
+      "proficiency": "learning",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 26
+    },
+    {
+      "id": "tech-27",
+      "name": "PyTorch",
+      "category": "Data & ML",
+      "proficiency": "learning",
+      "is_public": true,
+      "linked_project_slugs": [],
+      "display_order": 27
+    }
+  ],
+  "recognitions": [
+    {
+      "id": "rec-01",
+      "title": "ABEEK Human 2026",
+      "award": "우수포트폴리오상",
+      "award_en": "Excellent Portfolio Award",
+      "type": "award",
+      "date": "2026-10-01"
+    },
+    {
+      "id": "rec-02",
+      "title": "G-HOP 대학창업연합 창업캠프",
+      "award": "최우수상",
+      "award_en": "Excellence Award",
+      "type": "award",
+      "date": "2026-09-12",
+      "project_slug": "fresk"
+    },
+    {
+      "id": "rec-03",
+      "title": "OpenAI Experience Lab Seoul",
+      "award": "대상 · Grand Prize",
+      "award_en": "Grand Prize",
+      "type": "award",
+      "date": "2026-06-14"
+    },
+    {
+      "id": "rec-04",
+      "title": "AWS × 천안시 스마트도시 AIF 창업과정",
+      "award": "스마트 벤처상",
+      "award_en": "Smart Venture Award",
+      "type": "award",
+      "date": "2025-12-13"
+    },
+    {
+      "id": "rec-05",
+      "title": "한국장학재단 희망사다리",
+      "award": "전액 장학생",
+      "award_en": "Full Scholarship",
+      "type": "scholarship",
+      "date": "2025-03-02"
+    },
+    {
+      "id": "rec-06",
+      "title": "연성 글로벌 프론티어",
+      "award": "오픈배지",
+      "award_en": "Open Badge",
+      "type": "badge",
+      "date": "2025-01-23"
+    },
+    {
+      "id": "rec-07",
+      "title": "연성대 AI-X 해커톤",
+      "award": "은상",
+      "award_en": "Silver Award",
+      "type": "award",
+      "date": "2024-11-09"
+    },
+    {
+      "id": "rec-08",
+      "title": "연성대학교 성적우수 장학금",
+      "award": "2025년 2학기 · 학년 2등",
+      "award_en": "Academic Excellence Scholarship · 2025 Fall",
+      "type": "scholarship",
+      "date": null
+    }
+  ],
+  "leadership": [
+    {
+      "id": "lead-01",
+      "title": "본때 2026 축제 게임 개발",
+      "role": "팀장",
+      "status": "completed",
+      "started_at": "2026-07",
+      "ended_at": "2026-10"
+    },
+    {
+      "id": "lead-02",
+      "title": "캠퍼스 탐험 퀘스트",
+      "role": "가이드",
+      "status": "completed",
+      "started_at": "2026-05-04",
+      "ended_at": "2026-05-22"
+    },
+    {
+      "id": "lead-03",
+      "title": "창업동아리 INDEX",
+      "role": "동아리장",
+      "status": "ongoing",
+      "started_at": "2026-05-01",
+      "ended_at": null
+    },
+    {
+      "id": "lead-04",
+      "title": "대학일자리플러스센터",
+      "role": "서포터즈",
+      "status": "ongoing",
+      "started_at": "2026-04-29",
+      "ended_at": null
+    },
+    {
+      "id": "lead-05",
+      "title": "AI 동아리 AIM",
+      "role": "부원",
+      "status": "ongoing",
+      "started_at": "2026-04-21",
+      "ended_at": null
+    },
+    {
+      "id": "lead-06",
+      "title": "PEER 튜터링",
+      "role": "튜터",
+      "status": "completed",
+      "started_at": "2026-04-01",
+      "ended_at": "2026-05-29"
+    },
+    {
+      "id": "lead-07",
+      "title": "중앙동아리 CTRL",
+      "role": "부동아리장",
+      "status": "completed",
+      "started_at": "2026-03-02",
+      "ended_at": "2026-07-13"
+    },
+    {
+      "id": "lead-08",
+      "title": "중앙동아리 추억도적단",
+      "role": "동아리장",
+      "status": "completed",
+      "started_at": "2025-06-23",
+      "ended_at": "2025-12-22"
+    },
+    {
+      "id": "lead-09",
+      "title": "컴소과 동아리 본때",
+      "role": "부원",
+      "status": "ongoing",
+      "started_at": "2024-03-22",
+      "ended_at": null
+    }
+  ],
+  "programs": [
+    {
+      "id": "prog-01",
+      "title": "연성대학교 축제 SENRO 부스 운영",
+      "started_at": "2026-10-15",
+      "ended_at": "2026-10-16",
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-02",
+      "title": "경기 스타트업 서밋 G-SUMMIT",
+      "started_at": "2026-10-14",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-03",
+      "title": "Builder Workshop: AI Agent Payments",
+      "started_at": "2026-08-03",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-04",
+      "title": "OpenAI Experience Lab Seoul",
+      "started_at": "2026-06-01",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-05",
+      "title": "AI 에이전트 구현 교육 — 동그라미재단",
+      "started_at": "2026-06-01",
+      "ended_at": "2026-07-31",
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-06",
+      "title": "AI 마스터 빌드",
+      "started_at": "2026-05-20",
+      "ended_at": "2026-05-21",
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-07",
+      "title": "캠퍼스 탐험 퀘스트 가이드",
+      "started_at": "2026-05-04",
+      "ended_at": "2026-05-22",
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-08",
+      "title": "연성대 서포터즈",
+      "started_at": "2026-04-29",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-09",
+      "title": "YSU 잉글리쉬 카페",
+      "started_at": "2026-04-02",
+      "ended_at": "2026-04-16",
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-10",
+      "title": "PEER 튜터링 운영",
+      "started_at": "2026-04-01",
+      "ended_at": "2026-05-29",
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-11",
+      "title": "LPU 어학연수 및 인턴십",
+      "started_at": "2026-01-31",
+      "ended_at": "2026-02-27",
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-12",
+      "title": "대만 전공 연수",
+      "started_at": "2026-01-13",
+      "ended_at": "2026-01-16",
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-13",
+      "title": "AWS × 천안시 CLF 취업과정",
+      "started_at": "2025-12-20",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-14",
+      "title": "AWS × 천안시 AIF 창업과정",
+      "started_at": "2025-12-13",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-15",
+      "title": "인공지능과 스토리텔링 특강",
+      "started_at": "2025-12-12",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-16",
+      "title": "YSU ESG 캐릭터 디자인",
+      "started_at": "2025-12-05",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-17",
+      "title": "호주 AQF Online Program",
+      "started_at": "2025-10-31",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-18",
+      "title": "구글 AI에센셜 디지털스킬업",
+      "started_at": "2025-10-10",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-19",
+      "title": "과제 및 학습에서의 ChatGPT",
+      "started_at": "2025-09-30",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-20",
+      "title": "AWS Public Sector Day Seoul",
+      "started_at": "2025-09-15",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-21",
+      "title": "대학생 산업안전 생성형 AI 교육 콘텐츠 공모전",
+      "started_at": "2025-07-29",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-22",
+      "title": "코멘토 IT 8개 직무 기초체험",
+      "started_at": "2025-06-30",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-23",
+      "title": "인공지능 & 빅데이터쇼",
+      "started_at": "2025-06-13",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-24",
+      "title": "연성대학교 직무역량강화 프로그램",
+      "started_at": "2024-12-13",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-25",
+      "title": "씨케이넷 기업 탐방",
+      "started_at": "2024-12-12",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-26",
+      "title": "AI역량 심화교육",
+      "started_at": "2024-12-10",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-27",
+      "title": "연성 AI-X 해커톤",
+      "started_at": "2024-11-09",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-28",
+      "title": "연성 글로벌 프론티어",
+      "started_at": "2024-07-21",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-29",
+      "title": "학생성공 Build-Up 현장교육지원",
+      "started_at": "2024-04-19",
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-30",
+      "title": "연성대학교 축제 게임 체험 부스 개발",
+      "started_at": null,
+      "ended_at": null,
+      "attendance_status": "unknown"
+    },
+    {
+      "id": "prog-31",
+      "title": "기상·기후 AI 해커톤 본선 진출",
+      "started_at": null,
+      "ended_at": null,
+      "attendance_status": "unknown"
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-01",
+      "school": "연성대학교",
+      "department": "컴퓨터소프트웨어과",
+      "started_at": "2024-03-02",
+      "status": "enrolled"
+    },
+    {
+      "id": "edu-02",
+      "school": "안양공업고등학교",
+      "department": "XR융합응용학과",
+      "started_at": "2021-03-02",
+      "ended_at": "2024-01-06",
+      "status": "graduated"
+    }
+  ],
+  "employment": [
+    {
+      "id": "emp-01",
+      "company": "NRC테크",
+      "role": "국가근로장학생",
+      "started_at": "2025-09-29",
+      "ended_at": "2026-02-28",
+      "description_ko": "송부전 관리 웹사이트 개발 및 DDSS 데이터베이스 관련 업무",
+      "description_en": "Web development and DDSS database-related work."
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert-01",
+      "title": "Microsoft Certified: Azure AI Fundamentals (AI-900)",
+      "issuer": "Microsoft",
+      "issued_at": "2024-12-27",
+      "score": "822",
+      "status": "acquired"
+    }
+  ],
+  "media_assets": [],
+  "asset_links": []
+}

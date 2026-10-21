@@ -1,0 +1,3 @@
+import {NextResponse} from 'next/server';import {getProjectBySlug} from '@/lib/repository';
+export const dynamic='force-dynamic';export const runtime='nodejs';
+export async function GET(_req:Request,{params}:{params:Promise<{slug:string}>}){const {slug}=await params;try{const d=await getProjectBySlug(slug);if(!d.project)return NextResponse.json({error:'Not found'},{status:404});return NextResponse.json({project:d.project,metrics:d.data.projectMetrics.filter(m=>m.project_id===d.project?.id),technologies:d.data.projectTechnologies.filter(t=>t.project_id===d.project?.id)})}catch{return NextResponse.json({error:'Database unavailable'},{status:503})}}
