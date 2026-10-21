@@ -6,10 +6,11 @@
     "dev": "next dev --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start --hostname 0.0.0.0",
-    "db:init": "node scripts/bootstrap.mjs",
-    "db:seed": "node scripts/seed.mjs",
     "typecheck": "tsc --noEmit",
-    "data:check": "node scripts/validate-seed.mjs"
+    "data:check": "node scripts/validate-seed.mjs",
+    "db:verify": "node scripts/verify-existing-db.mjs",
+    "check:static": "node scripts/static-contract-check.mjs",
+    "check:smoke": "node scripts/smoke-readonly.mjs"
   },
   "dependencies": {
     "next": "^16.0.0",

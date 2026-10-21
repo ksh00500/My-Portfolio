@@ -7,7 +7,7 @@ export async function POST(request:NextRequest){
  const body=await request.json().catch(()=>({}));
  if(!verifyPassword(String(body.password||'')))return NextResponse.json({error:'Invalid credentials'},{status:401});
  const result=NextResponse.json({authenticated:true});
- result.cookies.set(adminCookie,sessionToken(),{httpOnly:true,secure:request.nextUrl.protocol==='https:',sameSite:'strict',maxAge:12*60*60,path:'/'});
+ result.cookies.set(adminCookie,sessionToken(),{httpOnly:true,secure:request.nextUrl.protocol==='https:'||request.headers.get('x-forwarded-proto')==='https',sameSite:'strict',maxAge:12*60*60,path:'/'});
  return result;
 }
 export async function DELETE(request:NextRequest){

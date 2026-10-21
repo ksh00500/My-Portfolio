@@ -1,5 +1,11 @@
+.git
 node_modules
 .next
-.git
 .env
-*.zip
+.env.*
+!.env.example
+*.log
+coverage
+seed
+scripts
+reference

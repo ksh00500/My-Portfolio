@@ -9,7 +9,11 @@ export function db(){
  return global.__portfolioPool;
 }
 export async function rows<T>(sql:string,values:unknown[]=[]):Promise<T[]>{
- const result=await db().query(sql,values);
+ let result;
+ try{result=await db().query(sql,values)}catch(e){
+  const err=e as {code?:string};console.error('[portfolio-db] read-query failed', {sqlstate:err?.code||'unknown'});
+  throw e;
+ }
  // Dates and numeric types are normalized before crossing the Server/Client boundary.
  return JSON.parse(JSON.stringify(result.rows)) as T[];
 }
