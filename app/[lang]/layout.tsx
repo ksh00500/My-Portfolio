@@ -7,5 +7,7 @@ export const dynamic='force-dynamic';
 export default async function LanguageLayout({children,params}:{children:React.ReactNode;params:Promise<{lang:string}>}){
  const {lang}=await params;if(lang!=='ko'&&lang!=='en')notFound();
  const data=await getPortfolioData();const profile=data.profile;
- return <><Nav lang={lang as Locale} name={(lang==='ko'?profile?.name_ko:profile?.name_en)||'PORTFOLIO'}/><ScrollStatus/><main>{children}</main></>;
+ const field=lang==='ko'?profile?.name_ko:profile?.name_en;
+ const name=typeof field==='string'&&field.trim()?field:'PORTFOLIO';
+ return <><Nav lang={lang as Locale} name={name}/><ScrollStatus/><main>{children}</main></>;
 }

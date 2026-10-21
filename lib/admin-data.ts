@@ -13,7 +13,7 @@ async function active(entity:string){
  if(!info.exists)throw new Error(`${table} table does not exist in the connected database`);
  // Entity/table identifiers are allowlisted; writable columns come from the live DB catalog, excluding generated, system and sensitive fields.
  const columns=info.columns.filter(col=>!systemColumns.has(col.name)&&!col.generated&&!col.identity&&!/(?:^|_)(?:password|secret|token|hash)(?:_|$)/i.test(col.name)).map(col=>col.name);
- const primary=composite[entity]||[entity==='site_content'?'key':'id'];
+ const primary=info.primaryKeys.length?info.primaryKeys:(composite[entity]||[entity==='site_content'?'key':'id']);
  for(const key of primary)if(!info.names.has(key))throw new Error(`Required key column ${key} is not present`);
  return {config,table,info,columns,primary};
 }
