@@ -17,7 +17,7 @@ const tables = {
   project_metrics: {label:'metric_name',fields:['metric_name','display_value','is_verified','note'],details:['note']},
   media_assets: {label:'file_name',fields:['file_name','external_url','storage_key','caption'],details:['caption']}
 };
-const placeholder=/\\b(?:lorem|ipsum|dummy|placeholder|sample|tbd|todo|replace[ _-]?me)\\b|example\\.com|test@example\\.com|샘플|테스트용|가짜 데이터|임시 문구|추후 입력|내용 입력/i;
+const placeholder=/lorem|ipsum|dummy|placeholder|sample|tbd|todo|replace[ _-]?me|example[.]com|test@example[.]com|샘플|테스트용|가짜 데이터|임시 문구|추후 입력|내용 입력/i;
 const present=v=>v!==null&&v!==undefined&&String(v).trim()!=='';
 const client=new pg.Client({connectionString:process.env.DATABASE_URL,connectionTimeoutMillis:7000});
 const report={source:'live PostgreSQL (read-only)',notes:[
