@@ -21,7 +21,7 @@ export default function Admin(){
  useEffect(()=>{if(logged&&entity==='project_technologies')Promise.all([fetch('/api/admin/projects').then(r=>r.json()),fetch('/api/admin/technologies').then(r=>r.json())]).then(([p,t])=>{setProjectOpts(p.items||[]);setTechOpts(t.items||[])}).catch(()=>{})},[entity,logged]);
  async function login(e:React.FormEvent){e.preventDefault();setError('');try{const r=await fetch('/api/admin/auth',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password})});if(!r.ok)throw new Error('관리자 비밀번호를 확인해 주세요');setLogged(true);setPassword('')}catch(e){setError(String(e))}}
  async function logout(){await fetch('/api/admin/auth',{method:'DELETE'});setLogged(false);setItems([])}
- function select(row:Row){setSelected(idOf(row,entity));setPayload(JSON.stringify(row,(key,value)=>key==='created_at'||key==='updated_at'?undefined:value,2))}
+ function select(row:Row){const editable=Object.fromEntries(Object.entries(row).filter(([key])=>fields.includes(key)&&key!=='created_at'&&key!=='updated_at'));setSelected(idOf(row,entity));setPayload(JSON.stringify(editable,null,2))}
  function createNew(){const required=requiredFields.filter(k=>k!=='id'&&fields.includes(k));setSelected('');setPayload(JSON.stringify(Object.fromEntries(required.map(k=>[k,''])),null,2))}
  async function save(){setError('');setStatus('');let obj:Row;try{obj=JSON.parse(payload);if(typeof obj!=='object'||Array.isArray(obj)||obj===null)throw Error('Object required')}catch{return setError('올바른 JSON 객체를 입력해 주세요')}
  const editing=Boolean(selected);if(editing&&(entity==='project_experiences'||entity==='experience_tags'))return setError('이 연결은 삭제 후 다시 등록해 주세요.');const api='/api/admin/'+entity+(editing?'/'+encodeURIComponent(selected):'');
