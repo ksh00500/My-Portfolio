@@ -9,7 +9,7 @@ Source changes completed in separate GitHub branch, not deployed to the live ser
 - `lib/repository.ts` — use `profiles`, inspect optional tables/columns, avoid `verification_status`/`effort_weight`, public data isolation, site-copy fallback and safe media sorting.
 - `lib/schema-introspection.ts` (new) — read-only information_schema lookup, allowlisted SQL identifier quoting, safe SQLSTATE logs/error translation.
 - `lib/site-content.ts` (new) — source-preserved 14 bilingual site strings, when `site_content` is absent.
-- `lib/admin-data.ts`, `lib/admin-resources.ts` — physical `profiles` mapping, schema-aware writable columns, required/default/null validations, UUID generation, constrained CRUD, optional audit table.
+- `lib/admin-data.ts`, `lib/admin-resources.ts` — physical `profiles` mapping, schema-discovered writable columns with system/sensitive-column exclusions, required/default/null validations, UUID generation, constrained CRUD, optional audit table.
 - `lib/types.ts` — relationship type contains actual four attributes.
 - `app/api/admin/project-technologies/route.ts` — safe upsert/delete based on four actual fields, no fabricated verification.
 - `app/api/admin/[entity]/**`, `app/api/admin/resources`, `app/api/admin/schema` — safe CRUD errors, runtime column metadata and authenticated live schema inspection.

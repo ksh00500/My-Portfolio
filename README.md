@@ -52,7 +52,7 @@ Existing Cloudflare Tunnel service URL: **`http://127.0.0.1:3001`**, since `keyd
 
 Public pages use `is_public = true`, and project source links are exposed only when `source_code_visibility='public'`. Relations use exactly the columns `project_id`, `technology_id`, `usage_note`, `is_primary` — no unverified `confirmed` markers or made-up weights. Circle size is computed from project link counts.
 
-The admin uses server-side entity allowlists intersected with live `information_schema.columns` and validates required columns based on the live schema. PostgreSQL applies FK, unique, enum and CHECK constraints. For an unavailable `site_content` table, the administrator hides that resource, and the public site uses original Korean/English copy stored in `lib/site-content.ts` (does not insert any row).
+The admin uses server-side entity allowlists with writable columns discovered from live `information_schema.columns` (generated, system and sensitive fields excluded) and validates required columns based on the live schema. PostgreSQL applies FK, unique, enum and CHECK constraints. For an unavailable `site_content` table, the administrator hides that resource, and the public site uses original Korean/English copy stored in `lib/site-content.ts` (does not insert any row).
 
 ### Security
 
