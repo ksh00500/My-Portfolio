@@ -10,7 +10,8 @@
     "data:check": "node scripts/validate-seed.mjs",
     "db:verify": "node scripts/verify-existing-db.mjs",
     "check:static": "node scripts/static-contract-check.mjs",
-    "check:smoke": "node scripts/smoke-readonly.mjs"
+    "check:smoke": "node scripts/smoke-readonly.mjs",
+    "db:audit": "node scripts/audit-live-data.mjs"
   },
   "dependencies": {
     "next": "^16.0.0",
