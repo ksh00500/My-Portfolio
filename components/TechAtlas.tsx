@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
-import { buildTechAtlas } from "@/lib/tech-atlas";
+import { buildTechAtlas, TECH_CATEGORY_COLORS } from "@/lib/tech-atlas";
+import { TechBubbleMap } from "@/components/TechBubbleMap";
 import { categoryLabel, projectName, statusLabel } from "@/lib/presentation";
 import { projectSummary } from "@/lib/types";
 import type { Locale, Technology, Relation, Project } from "@/lib/types";
@@ -30,6 +31,7 @@ export function TechAtlas({
   const [selection, setSelection] = useState<Selection>(null);
   const [query, setQuery] = useState("");
   const [proficiency, setProficiency] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const [view, setView] = useState("map");
   const selectedTech =
     selection?.kind === "tech"
@@ -46,9 +48,28 @@ export function TechAtlas({
       : [];
   const linkedTechs = new Set(activeLinks.map((l) => l.technologyId));
   const linkedProjects = new Set(activeLinks.map((l) => l.projectId));
+  const peers = new Set(
+    selectedTech
+      ? model.links
+          .filter((link) => linkedProjects.has(link.projectId))
+          .map((link) => link.technologyId)
+      : [],
+  );
+  const counts = useMemo(
+    () =>
+      Object.fromEntries(
+        model.techs.map((technology) => [
+          technology.id,
+          model.byTech.get(technology.id)?.length || 0,
+        ]),
+      ),
+    [model],
+  );
+  const maximum = Math.max(1, ...Object.values(counts));
   const visible = model.techs.filter(
     (t) =>
       (proficiency === "all" || t.proficiency === proficiency) &&
+      (categoryFilter === "all" || t.category === categoryFilter) &&
       `${t.name} ${t.category} ${categoryLabel(t.category, lang)}`
         .toLocaleLowerCase()
         .includes(query.trim().toLocaleLowerCase()),
@@ -92,6 +113,7 @@ export function TechAtlas({
   const clearFilters = () => {
     setQuery("");
     setProficiency("all");
+    setCategoryFilter("all");
     setSelection(null);
   };
 
@@ -164,18 +186,68 @@ export function TechAtlas({
               aria-pressed={view === value}
               onClick={() => setView(value)}
             >
-              {value === "map" ? (ko ? "관계도" : "Map") : ko ? "목록" : "List"}
+              {value === "map"
+                ? ko
+                  ? "사용 빈도 지도"
+                  : "Usage map"
+                : ko
+                  ? "목록"
+                  : "List"}
             </button>
           ))}
         </div>
+      </div>
+      <div
+        className="bubble-category-legend"
+        role="group"
+        aria-label={ko ? "기술 분야 필터" : "Filter by technology category"}
+      >
+        <button
+          type="button"
+          aria-pressed={categoryFilter === "all"}
+          onClick={() => {
+            setCategoryFilter("all");
+            setSelection(null);
+          }}
+        >
+          {ko ? "모든 분야" : "All categories"}
+        </button>
+        {model.categories.map((category, index) => (
+          <button
+            type="button"
+            key={category}
+            aria-pressed={categoryFilter === category}
+            style={
+              {
+                "--bubble-color":
+                  TECH_CATEGORY_COLORS[index % TECH_CATEGORY_COLORS.length],
+              } as CSSProperties
+            }
+            onClick={() => {
+              setCategoryFilter(categoryFilter === category ? "all" : category);
+              setSelection(null);
+            }}
+          >
+            <i aria-hidden="true" />
+            {categoryLabel(category, lang)}
+          </button>
+        ))}
       </div>
       <div className="atlas-explorer">
         <div className="atlas-constellation" data-view={view} id={`${id}-map`}>
           <div className="atlas-root">
             <span className="atlas-root-dot" aria-hidden="true" />
-            <strong>FULL-STACK</strong>
+            <strong>
+              {view === "map" ? "TECH IN PRACTICE" : "FULL-STACK"}
+            </strong>
             <span>
-              {ko ? "분야 → 기술 → 프로젝트" : "Category → skill → project"}
+              {view === "map"
+                ? ko
+                  ? "원 크기 = 프로젝트 사용 수"
+                  : "Circle area = project usage"
+                : ko
+                  ? "분야 → 기술 → 프로젝트"
+                  : "Category → skill → project"}
             </span>
           </div>
           {selectedTech && (
@@ -188,59 +260,78 @@ export function TechAtlas({
               </a>
             </div>
           )}
-          <div className="atlas-families">
-            {families.map(({ category, nodes }, index) => (
-              <section
-                className="atlas-family"
-                key={category}
-                style={{ "--branch-index": index } as CSSProperties}
-              >
-                <h3>
-                  <span aria-hidden="true">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  {categoryLabel(category, lang)}
-                </h3>
-                <div className="atlas-skill-nodes">
-                  {nodes.map((t) => {
-                    const active = selectedTech?.id === t.id;
-                    const linked = selectedProject && linkedTechs.has(t.id);
-                    const dimmed = selectedProject && !linked;
-                    const count = model.byTech.get(t.id)?.length || 0;
-                    return (
-                      <button
-                        className="atlas-skill-node"
-                        type="button"
-                        key={t.id}
-                        data-status={t.proficiency || "unknown"}
-                        data-linked={linked ? "true" : undefined}
-                        data-dimmed={dimmed ? "true" : undefined}
-                        aria-pressed={active}
-                        aria-controls={`${id}-detail`}
-                        onClick={() => selectTech(t)}
-                      >
-                        <span className="atlas-node-port" aria-hidden="true" />
-                        <span className="atlas-node-name">
-                          {t.name}
-                          <small>{status(t)}</small>
-                        </span>
-                        <span
-                          className="atlas-node-count"
-                          aria-label={
-                            ko
-                              ? `연결된 프로젝트 ${count}개`
-                              : `${count} linked projects`
-                          }
+          {view === "map" ? (
+            <TechBubbleMap
+              technologies={visible}
+              categories={model.categories}
+              counts={counts}
+              maximum={maximum}
+              selectedId={selectedTech?.id}
+              projectSelected={Boolean(selectedProject)}
+              linkedIds={linkedTechs}
+              peers={peers}
+              detailId={`${id}-detail`}
+              lang={lang}
+              onSelect={selectTech}
+            />
+          ) : (
+            <div className="atlas-families">
+              {families.map(({ category, nodes }, index) => (
+                <section
+                  className="atlas-family"
+                  key={category}
+                  style={{ "--branch-index": index } as CSSProperties}
+                >
+                  <h3>
+                    <span aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    {categoryLabel(category, lang)}
+                  </h3>
+                  <div className="atlas-skill-nodes">
+                    {nodes.map((t) => {
+                      const active = selectedTech?.id === t.id;
+                      const linked = selectedProject && linkedTechs.has(t.id);
+                      const dimmed = selectedProject && !linked;
+                      const count = model.byTech.get(t.id)?.length || 0;
+                      return (
+                        <button
+                          className="atlas-skill-node"
+                          type="button"
+                          key={t.id}
+                          data-status={t.proficiency || "unknown"}
+                          data-linked={linked ? "true" : undefined}
+                          data-dimmed={dimmed ? "true" : undefined}
+                          aria-pressed={active}
+                          aria-controls={`${id}-detail`}
+                          onClick={() => selectTech(t)}
                         >
-                          {count || "—"}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-            ))}
-          </div>
+                          <span
+                            className="atlas-node-port"
+                            aria-hidden="true"
+                          />
+                          <span className="atlas-node-name">
+                            {t.name}
+                            <small>{status(t)}</small>
+                          </span>
+                          <span
+                            className="atlas-node-count"
+                            aria-label={
+                              ko
+                                ? `연결된 프로젝트 ${count}개`
+                                : `${count} linked projects`
+                            }
+                          >
+                            {count || "—"}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
           {!visible.length && (
             <div className="atlas-empty">
               <p>
@@ -258,7 +349,9 @@ export function TechAtlas({
                 : `${visible.length} of ${model.techs.length} skills`}
             </span>
             <span>
-              {ko ? "선을 따라 연결을 탐색하세요." : "Explore the connections."}
+              {ko
+                ? "선 = 같은 프로젝트에서 함께 사용"
+                : "Lines = used in the same project"}
             </span>
           </div>
         </div>
@@ -381,8 +474,8 @@ export function TechAtlas({
       </div>
       <p className="atlas-data-note">
         {ko
-          ? "분야의 가지는 기술 분류를, 프로젝트 연결은 등록된 사용 이력을 나타냅니다. 숫자는 연결된 프로젝트 수이며 숙련도 점수가 아닙니다."
-          : "Branches group technologies by category. Project links show recorded usage; counts represent connected projects, not proficiency scores."}
+          ? "원 면적은 같은 기준에서 프로젝트 수에 따라 증가합니다. 분야·검색 필터를 바꿔도 크기 기준은 유지합니다. 0개 기술은 별도 구역에 표시하며, 숫자는 실제 연결 수이고 숙련도 점수가 아닙니다."
+          : "Circle area increases with recorded project usage on a fixed scale across filters. Zero-link skills appear separately. Counts represent distinct projects, not proficiency scores."}
       </p>
     </div>
   );
