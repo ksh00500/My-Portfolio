@@ -3,7 +3,7 @@ import {useCallback,useEffect,useMemo,useState} from 'react';
 import './admin.css';
 type Row=Record<string,unknown>;
 function idOf(row:Row,keys:string[]){return keys.map(k=>String(row[k]??'')).join('::')}
-const sectionNames:Record<string,string>={profile:'프로필',projects:'프로젝트',project_metrics:'프로젝트 지표',technologies:'기술 스택',project_technologies:'프로젝트-기술 관계',experiences:'통합 경험',recognitions:'수상/장학',certifications:'자격증',leadership:'리더십',participations:'교육/행사',education:'학력',employment:'근무',goals:'목표',media_assets:'자료',asset_links:'자료 연결',project_experiences:'프로젝트-경험',tags:'태그',experience_tags:'경험-태그',site_content:'화면 문구'};
+const sectionNames:Record<string,string>={profile:'프로필',projects:'프로젝트',project_metrics:'프로젝트 지표',technologies:'기술 스택',technology_evidence:'기술 이력·근거',project_technologies:'프로젝트-기술 관계',experiences:'통합 경험',recognitions:'수상/장학',certifications:'자격증',leadership:'리더십',participations:'교육/행사',education:'학력',employment:'근무',goals:'목표',media_assets:'자료',asset_links:'자료 연결',project_experiences:'프로젝트-경험',tags:'태그',experience_tags:'경험-태그',site_content:'화면 문구'};
 export default function Admin(){
  const [logged,setLogged]=useState(false),[ready,setReady]=useState(false),[password,setPassword]=useState('');
  const [entity,setEntity]=useState('projects'),[items,setItems]=useState<Row[]>([]),[fields,setFields]=useState<string[]>([]),[selected,setSelected]=useState<string>(''),[payload,setPayload]=useState('{}');

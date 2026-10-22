@@ -15,6 +15,8 @@ try {
     CREATE TABLE site_content(key text, ko text, en text, is_public boolean);
     CREATE TABLE sessions(token text);
     CREATE TABLE goals(id text, title text);
+    CREATE TABLE experiences(id text, name text, is_public boolean);
+    CREATE TABLE technology_evidence(id text, technology_id text, experience_id text, recognition_id text, evidence_kind text, evidence_note text, is_public boolean, api_token text);
     INSERT INTO projects VALUES ('public', 'Visible project', true, 'fake-token'), ('private', 'Hidden project', false, 'fake-private-token');
     INSERT INTO technologies VALUES ('linux', 'Linux', true, 'fake-password');
     INSERT INTO project_technologies VALUES ('public','linux','Personal Linux server',false),('private','linux','Hidden connection',false);
@@ -22,6 +24,12 @@ try {
     INSERT INTO site_content VALUES ('contact.email','ksh@keyda.site','ksh@keyda.site',true),('private-note','Hidden note',null,false);
     INSERT INTO sessions VALUES ('fake-session-token');
     INSERT INTO goals VALUES ('no-visibility','Must be excluded');
+    INSERT INTO experiences VALUES ('event','Public course',true),('private-event','Hidden course',false);
+    INSERT INTO technology_evidence VALUES
+      ('valid','linux','event',null,'learning','Actual coursework',true,'fake-evidence-token'),
+      ('private-source','linux','private-event',null,'learning','Hidden source',true,'fake-token'),
+      ('ambiguous','linux','event','award','learning','Ambiguous',true,'fake-token'),
+      ('private-row','linux','event',null,'learning','Hidden row',false,'fake-token');
   `);
   await db.exec('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
   const snapshot = await collectPortfolioSnapshot(db);
@@ -30,6 +38,8 @@ try {
   assert.equal(snapshot.tables.project_technologies[0].technology_id, 'linux');
   assert.equal(snapshot.tables.profiles[0].email, 'ksh@keyda.site');
   assert.equal(snapshot.tables.site_content.length, 1);
+  assert.equal(snapshot.tables.technology_evidence.length, 1);
+  assert.equal(snapshot.tables.technology_evidence[0].id, 'valid');
   assert.ok(!Object.hasOwn(snapshot.tables, 'sessions'));
   assert.ok(!Object.hasOwn(snapshot.tables, 'goals'), 'missing visibility must fail closed');
   assert.ok(!/fake-|Hidden|api_token|admin_password|session_secret/.test(JSON.stringify(snapshot)));
@@ -39,6 +49,7 @@ try {
   await db.exec('DROP TABLE technologies');
   const missingTarget = await collectPortfolioSnapshot(db);
   assert.equal(missingTarget.tables.project_technologies.length, 0, 'missing reference tables cannot leak links');
+  assert.equal(missingTarget.tables.technology_evidence.length, 0, 'missing technology cannot leak evidence');
 } finally {
   await db.close();
 }

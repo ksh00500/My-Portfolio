@@ -23,6 +23,7 @@ For a production-build preview, run `npm run build` followed by `npm run preview
 - The requested identity “셈을 못하는 상인” is retained as the opening title; the rejected philosophy sentence remains retired. “아이디어를 현실로 만드는 개발자” appears in the default introduction. The desktop chapter index uses an unboxed hairline track, persistent labels, and 44px targets. Header actions use a consistent SVG arrow instead of font glyphs. The opening light has no isolated point decoration.
 - Project search by name/description/role, translated status labels, clear filters, and missing-date handling.
 - The technical section opens with a bubble usage map. Circle area increases with distinct recorded project counts using a fixed scale across searches and category/proficiency filters. Selecting a circle reveals its projects and connects technologies used in the same projects. Disconnected skills have a separate small-circle section, while the list view retains full category/name/status records. Tablet/mobile use native-size circles and labels instead of shrinking the desktop SVG. Counts represent project usage, not proficiency scores.
+- Explicit `technology_evidence` links connect skills to work, education, awards, activities and acquired credentials. The detail panel separates practice, learning, attendance and credentials; skills with only non-project evidence appear in their own group. The same event is deduplicated through experience/project references. These records do not increase the bubble's project count. No keywords or related-project stacks are automatically converted into experience.
 - Bubble diameters are now 45–47% of the initial map at the same chart width. Desktop names use native 13px HTML text, independent of circle scaling. A ResizeObserver adapts seeded organic packing to the available width; circle and label shapes are tested separately, and the result is vertically cropped to remove empty space. There is no regular-grid fallback.
 - Recognition uses an amber award-room composition with engraved laurel medallions, a large first record, supporting award cards, and links to related projects. The same cards appear in the recognition archive. The navigation shows the name without a decorative initial.
 - Confirmed participation only in the public experience page. Unconfirmed program records remain in the database and administrator; they are not presented as achievements.
@@ -33,7 +34,7 @@ For a production-build preview, run `npm run build` followed by `npm run preview
 
 Design changes were made on top of PR #3's compatibility branch, baseline `68ad7b11348ed915b68ec1363545a4a9bbfdab3a`, rather than the older `main`.
 
-> **Preservation rules:** Existing `portfolio-postgres` (PostgreSQL 17), `portfolio` database, 19 projects and 27 technologies are never reset. This version does **not** create any Postgres service, run schema.sql, bootstrap, seed or migration during deployment.
+> **Preservation rules:** Existing `portfolio-postgres` (PostgreSQL 17), the `portfolio` database and its records are never reset. The historical fixture has 19 projects/27 technologies; verified live maintenance on 2026-10-22 preserved 19 projects/41 project links and added 6 technologies/8 evidence rows. This version does **not** create any Postgres service, run schema.sql, bootstrap, seed or migration during deployment.
 
 ## Backup before agent DB maintenance
 
@@ -42,6 +43,10 @@ Every agent-executed DB change requires a fresh, verified backup **before** writ
 The agent must review and mirror the public JSON/manifest into a new timestamped Basic Memory note in project `my-portfolio`, read it back, perform the scoped transaction, and record a new after-snapshot and change log. No credentials, private rows or raw dumps go to Obsidian/Git. Failed backups or failed pre-change memory storage block writes. The administrator UI does not automatically implement this maintenance workflow. See [the complete workflow](db/BACKUP_WORKFLOW.md) and `AGENTS.md`.
 
 Run `npm run check:snapshot` for disposable-memory-DB tests of export privacy and backup preflight. Archive readability/hash verification is separate from a real restore test in an isolated DB.
+
+When the user authenticates an SSH agent, `npm run db:snapshot:ssh -- before operation-slug` uses SSH plus the existing container's `pg_dump`, `pg_restore` and `psql`, without reading DB connection secrets. The default SSH alias is `ksh@kshserver`; `PORTFOLIO_SSH_TARGET` can override it. Both transports export the archive and JSON from the same PostgreSQL snapshot and require reviewed Obsidian mirroring/read-back before any mutation.
+
+The additive `db/technology-evidence.sql` defines the optional evidence table. It was manually applied to the live DB on 2026-10-22 in a backed-up, validated transaction; never run it automatically or reapply it. Public projection fails closed for private, ambiguous, unknown-attendance and unearned-credential references. An older DB without this table still returns an empty evidence list. See `db/TECHNOLOGY_EVIDENCE.md`.
 
 ## Deployment on existing Ubuntu host
 
@@ -106,6 +111,8 @@ The admin uses server-side entity allowlists with writable columns discovered fr
 ```bash
 npm run check:static      # source schema contract / dangerous compose pattern / source baseline
 npm run check:content     # retired copy, custom copy, locale fallback regression checks
+npm run check:evidence    # evidence privacy, event deduplication, FK/check/unique constraints
+npm run check:snapshot    # public backup export and fail-closed preflight
 npm run data:check        # checks historical imported JSON, not the production database
 npm run typecheck         # TypeScript check (requires installed packages)
 npm run build             # Next.js production build (requires installed packages)

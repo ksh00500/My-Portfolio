@@ -17,6 +17,7 @@ export const fields = Object.fromEntries(Object.entries({
   project_experiences: 'project_id experience_id',
   experience_tags: 'experience_id tag_id',
   site_content: 'key ko en group_name display_order',
+  technology_evidence: 'id technology_id experience_id recognition_id participation_id education_id employment_id leadership_id certification_id evidence_kind evidence_note is_public',
 }).map(([table, columns]) => [table, columns.split(' ')]));
 
 const relations = {
@@ -43,6 +44,14 @@ export async function collectPortfolioSnapshot(client) {
     if (!tables[table]) continue;
     const visibleIds = Object.entries(references).map(([column, target]) => [column, new Set((tables[target] || []).map(row => String(row.id)))]);
     tables[table] = tables[table].filter(row => visibleIds.every(([column, ids]) => ids.has(String(row[column]))));
+  }
+  if (tables.technology_evidence) {
+    const sources = { experience_id:'experiences', recognition_id:'recognitions', participation_id:'participations', education_id:'education', employment_id:'employment', leadership_id:'leadership', certification_id:'certifications' };
+    const visible = new Map(Object.entries(tables).map(([table, rows]) => [table, new Set(rows.map(row => String(row.id)))]));
+    tables.technology_evidence = tables.technology_evidence.filter(row => {
+      const occupied = Object.keys(sources).filter(column => row[column] != null);
+      return visible.get('technologies')?.has(String(row.technology_id)) && occupied.length === 1 && visible.get(sources[occupied[0]])?.has(String(row[occupied[0]]));
+    });
   }
   return { format: 'my-portfolio/public-snapshot/v1', scope: 'Public portfolio fields only; credentials, private rows and unlisted tables/columns are excluded. Restore from the local full archive.', tables };
 }

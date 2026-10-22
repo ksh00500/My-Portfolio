@@ -8,6 +8,8 @@
 
 PostgreSQL 17 이상 클라이언트의 `pg_dump`, `pg_restore`가 필요하다. PATH에 없으면 `.env`의 `PG_DUMP_BIN`, `PG_RESTORE_BIN`에 실행 파일의 절대 경로를 지정한다. 서버보다 오래된 pg_dump, 권한 부족, 연결 실패가 있으면 백업이 실패하며 DB 쓰기를 진행하지 않는다.
 
+SSH 인증 공유 방식에서는 `npm run db:snapshot:ssh -- before <작업명>`을 사용한다. 사용자가 SSH 에이전트에 직접 인증한 뒤 기존 `portfolio-postgres` 컨테이너 내부의 `pg_dump`·`pg_restore`·`psql`을 사용하므로 로컬 `.env`나 DB 비밀번호가 필요 없다. 기본 대상은 `ksh@kshserver`이며 `PORTFOLIO_SSH_TARGET`으로 변경할 수 있다. 로컬 백업·공개 JSON·Obsidian 저장/재확인 규칙은 동일하다. 2026-10-22 실제 before/after 아카이브·JSON 검증과 Obsidian 보관에 이 경로를 사용했다.
+
 ## 수정 전 — 매번 새 백업
 
 1. 읽기 전용 조회로 실제 스키마, 변경 대상 ID, 기존 값과 예상 영향 행 수를 확인한다. AWS라는 이유만으로 모든 프로젝트에 Linux를 연결하지 않고 실제 Linux 운영 대상과 누락된 관계를 확인한다.

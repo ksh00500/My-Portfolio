@@ -268,6 +268,7 @@ export default async function Home({
             techs={d.technologies}
             relations={d.projectTechnologies}
             projects={d.projects}
+            contexts={d.technologyContexts}
             lang={lang}
           />
         </div>

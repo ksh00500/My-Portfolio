@@ -14,6 +14,7 @@ export function TechBubbleMap({
   technologies,
   categories,
   counts,
+  contextCounts,
   maximum,
   selectedId,
   projectSelected,
@@ -26,6 +27,7 @@ export function TechBubbleMap({
   technologies: Technology[];
   categories: string[];
   counts: Record<string, number>;
+  contextCounts: Record<string, number>;
   maximum: number;
   selectedId?: string;
   projectSelected: boolean;
@@ -56,7 +58,8 @@ export function TechBubbleMap({
     return () => window.removeEventListener("resize", measure);
   }, []);
   const used = technologies.filter((t) => counts[t.id] > 0);
-  const unlinked = technologies.filter((t) => !counts[t.id]);
+  const unlinked = technologies.filter((t) => !counts[t.id] && !contextCounts[t.id]);
+  const outsideProject = technologies.filter((t) => !counts[t.id] && contextCounts[t.id] > 0);
   const chart = useMemo(
     () =>
       layoutTechBubbles(
@@ -189,6 +192,11 @@ export function TechBubbleMap({
           })}
         </div>
       )}
+      {outsideProject.length > 0 && <div className="bubble-unlinked-section">
+        <div className="bubble-unlinked-heading"><h3>{ko ? "프로젝트 밖에서 다룬 기술" : "Skills beyond projects"}</h3><span>{outsideProject.length}</span></div>
+        <p>{ko ? "교육·실무·수상·활동·자격의 확인된 기록입니다. 선택하면 근거와 활용 유형을 볼 수 있습니다." : "Verified records from education, work, awards, activities and credentials. Select a skill to view its evidence."}</p>
+        <div className="bubble-evidence-skills">{outsideProject.map(technology => <button type="button" key={technology.id} aria-pressed={selectedId === technology.id} aria-controls={detailId} onClick={() => onSelect(technology)}><strong>{technology.name}</strong><span>{contextCounts[technology.id]}{ko ? "개 이력" : " records"}</span></button>)}</div>
+      </div>}
       {unlinked.length > 0 && (
         <div className="bubble-unlinked-section">
           <div className="bubble-unlinked-heading">
