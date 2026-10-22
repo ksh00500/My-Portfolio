@@ -26,7 +26,7 @@ For a production-build preview, run `npm run build` followed by `npm run preview
 - Bubble diameters are now 45–47% of the initial map at the same chart width. Desktop names use native 13px HTML text, independent of circle scaling. A ResizeObserver adapts seeded organic packing to the available width; circle and label shapes are tested separately, and the result is vertically cropped to remove empty space. There is no regular-grid fallback.
 - Recognition uses an amber award-room composition with engraved laurel medallions, a large first record, supporting award cards, and links to related projects. The same cards appear in the recognition archive. The navigation shows the name without a decorative initial.
 - Confirmed participation only in the public experience page. Unconfirmed program records remain in the database and administrator; they are not presented as achievements.
-- Email is configured through `contact.email` in `lib/site-content.ts`. The user-provided default is `ksh.05.ow@gmail.com`.
+- Email is configured through `contact.email` in `lib/site-content.ts`. The user-provided default is `ksh@keyda.site`; the exact previous Gmail address is replaced at read time without modifying DB rows.
 - The PDF button opens the browser print dialog. Print styles remove navigation and decorative covers. It does not claim that a separate PDF has already been generated.
 - `resolveSiteContent()` replaces exact retired template phrases at read time while preserving custom text and database rows. No migration or seed runs as part of this change.
 - Missing contributions and results are not invented. Populate project roles, technical decisions, outcomes, and supporting materials using actual records.
@@ -34,6 +34,14 @@ For a production-build preview, run `npm run build` followed by `npm run preview
 Design changes were made on top of PR #3's compatibility branch, baseline `68ad7b11348ed915b68ec1363545a4a9bbfdab3a`, rather than the older `main`.
 
 > **Preservation rules:** Existing `portfolio-postgres` (PostgreSQL 17), `portfolio` database, 19 projects and 27 technologies are never reset. This version does **not** create any Postgres service, run schema.sql, bootstrap, seed or migration during deployment.
+
+## Backup before agent DB maintenance
+
+Every agent-executed DB change requires a fresh, verified backup **before** writing. Configure the ignored local `.env`, install PostgreSQL 17+ client tools, then run `npm run db:snapshot -- before operation-slug`. This read-only command creates a full local recovery archive, a public portfolio JSON export and a verification manifest in ignored `.backups/`. It does not modify portfolio rows or automatically upload data to Obsidian.
+
+The agent must review and mirror the public JSON/manifest into a new timestamped Basic Memory note in project `my-portfolio`, read it back, perform the scoped transaction, and record a new after-snapshot and change log. No credentials, private rows or raw dumps go to Obsidian/Git. Failed backups or failed pre-change memory storage block writes. The administrator UI does not automatically implement this maintenance workflow. See [the complete workflow](db/BACKUP_WORKFLOW.md) and `AGENTS.md`.
+
+Run `npm run check:snapshot` for disposable-memory-DB tests of export privacy and backup preflight. Archive readability/hash verification is separate from a real restore test in an isolated DB.
 
 ## Deployment on existing Ubuntu host
 

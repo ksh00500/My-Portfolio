@@ -30,6 +30,10 @@ const old = [
   { key: "ending.tagline", ko: "TO BE CONTINUED…", en: "TO BE CONTINUED…" },
 ];
 const snapshot = structuredClone(old);
+const oldEmail = [{ key: "contact.email", ko: "ksh.05.ow@gmail.com", en: "ksh.05.ow@gmail.com" }];
+assert.deepEqual(resolveSiteContent(oldEmail)["contact.email"], { ko: "ksh@keyda.site", en: "ksh@keyda.site" });
+assert.equal(oldEmail[0].ko, "ksh.05.ow@gmail.com", "displaying the updated email must not write to the DB input");
+assert.equal(resolveSiteContent([{ key: "contact.email", ko: "custom@example.org", en: null }])["contact.email"].ko, "custom@example.org");
 const clean = resolveSiteContent(old);
 assert.equal(defaultSiteContent["hero.title"].ko, "셈을 못하는 상인");
 assert.deepEqual(

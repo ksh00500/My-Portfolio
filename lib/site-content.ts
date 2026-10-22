@@ -31,11 +31,12 @@ export const defaultSiteContent: Copy = {
   "recognition.title": { ko: "수상 및 자격", en: "Awards & credentials" },
   "experience.title": { ko: "경력과 교육", en: "Experience & education" },
   "ending.title": { ko: "더 이야기 나누고 싶다면.", en: "Let’s get in touch." },
-  "contact.email": { ko: "ksh.05.ow@gmail.com", en: "ksh.05.ow@gmail.com" },
+  "contact.email": { ko: "ksh@keyda.site", en: "ksh@keyda.site" },
 };
 
 // Retire previous template copy without overwriting custom text or mutating DB rows.
 const retired: Record<string, string[]> = {
+  "contact.email": ["ksh.05.ow@gmail.com"],
   "hero.subtitle": [
     "삶은 계산하며 살아가되, 사람에게는 계산하지 않는다.",
     "I calculate my way through life, but never keep score with people.",

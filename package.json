@@ -15,7 +15,9 @@
     "check:content": "node scripts/check-content.mjs",
     "check:atlas": "node scripts/check-atlas.mjs",
     "check:smoke": "node scripts/smoke-readonly.mjs",
-    "db:audit": "node scripts/audit-live-data.mjs"
+    "db:audit": "node scripts/audit-live-data.mjs",
+    "db:snapshot": "node --env-file=.env scripts/backup-db.mjs",
+    "check:snapshot": "node scripts/check-snapshot.mjs"
   },
   "dependencies": {
     "next": "^16.0.0",

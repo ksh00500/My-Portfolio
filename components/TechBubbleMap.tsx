@@ -197,8 +197,8 @@ export function TechBubbleMap({
           </div>
           <p>
             {ko
-              ? "경험이 없다는 뜻이 아니라, 프로젝트 사용 이력이 아직 연결되지 않은 기술입니다."
-              : "These skills have no project usage linked in the records yet."}
+              ? "프로젝트와 연결되지 않았지만, 대학교 전공에서 배운 기술들 입니다."
+              : "These technologies were learned in university coursework and are not linked to projects yet."}
           </p>
           <div className="bubble-unlinked-grid">
             {unlinked.map((technology) => (
