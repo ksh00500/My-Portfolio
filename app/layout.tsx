@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "./cinematic.css";
 import "./showcase.css";
+import "./tech-bubbles.css";
 
 const pretendard = localFont({
   src: "../public/fonts/PretendardVariable.woff2",

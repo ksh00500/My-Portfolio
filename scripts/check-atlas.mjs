@@ -12,7 +12,7 @@ const { outputText } = ts.transpileModule(source, {
     target: ts.ScriptTarget.ES2022,
   },
 });
-const { buildTechAtlas } = await import(
+const { buildTechAtlas, techBubbleRadius, layoutTechBubbles } = await import(
   "data:text/javascript;base64," + Buffer.from(outputText).toString("base64")
 );
 const technologies = [
@@ -106,6 +106,54 @@ assert.deepEqual(
   "building the map must not mutate repository data",
 );
 assert.equal(buildTechAtlas([], [], relations).links.length, 0);
+const radii = [0, 1, 2, 5, 10].map((count) => techBubbleRadius(count, 10));
+assert.ok(radii.every((radius) => Number.isFinite(radius) && radius > 0));
+assert.ok(
+  radii.every((radius, index) => !index || radius > radii[index - 1]),
+  "more projects must produce a strictly larger circle",
+);
+const areaSteps = [1, 2, 3].map(
+  (count) =>
+    techBubbleRadius(count, 10) ** 2 - techBubbleRadius(count - 1, 10) ** 2,
+);
+assert.ok(
+  Math.max(...areaSteps) - Math.min(...areaSteps) < 1e-8,
+  "equal usage increments must add equal area, not equal radius",
+);
+for (const size of [0, 1, 8, 27, 50]) {
+  const items = Array.from({ length: size }, (_, index) => ({
+    id: `t${index}`,
+    count: 1 + (index % 10),
+  }));
+  const before = structuredClone(items);
+  const map = layoutTechBubbles(items, 10);
+  assert.equal(map.nodes.length, size);
+  assert.deepEqual(
+    layoutTechBubbles(items, 10),
+    map,
+    "layout must be stable across server/client renders",
+  );
+  assert.deepEqual(items, before);
+  for (const node of map.nodes) {
+    assert.ok(
+      node.left >= 0 &&
+        node.right <= map.width &&
+        node.top >= 0 &&
+        node.bottom <= map.height,
+      "labels and circles must stay inside the chart",
+    );
+    for (const other of map.nodes) {
+      if (node.id === other.id) continue;
+      assert.ok(
+        node.right <= other.left ||
+          other.right <= node.left ||
+          node.bottom <= other.top ||
+          other.bottom <= node.top,
+        "circle and label bounds must not overlap",
+      );
+    }
+  }
+}
 console.log(
-  "Atlas checks passed: real links, deduplicated counts, unavailable records, isolated nodes, stable order, immutable inputs.",
+  "Atlas checks passed: real links, deduplicated counts, isolated nodes, area scaling, deterministic packing, no label overlap, immutable inputs.",
 );
