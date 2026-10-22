@@ -3,12 +3,12 @@ import type { Copy } from "./types";
 /** Editable defaults. Reading these values never writes to the connected database. */
 export const defaultSiteContent: Copy = {
   "hero.title": {
-    ko: "아이디어를 현실로\n만드는 개발자",
-    en: "Turning ideas into\nworking products.",
+    ko: "셈을 못하는 상인",
+    en: "A Merchant Who Can’t Count",
   },
   "hero.subtitle": {
-    ko: "웹 서비스부터 실시간 게임까지.\n직접 기획하고, 개발하고, 운영한 경험을 소개합니다.",
-    en: "From web services to real-time games.\nA selection of products I have planned, built, and operated.",
+    ko: "아이디어를 현실로 만드는 개발자.\n웹 서비스부터 실시간 게임까지, 직접 기획하고 개발하고 운영합니다.",
+    en: "Turning ideas into working products.\nWeb services and real-time games I have planned, built, and operated.",
   },
   "about.title": {
     ko: "풀스택 개발자 김시호입니다.",
@@ -36,11 +36,6 @@ export const defaultSiteContent: Copy = {
 
 // Retire previous template copy without overwriting custom text or mutating DB rows.
 const retired: Record<string, string[]> = {
-  "hero.title": [
-    "셈을 못하는 상인",
-    "A Merchant Who Can't Count",
-    "A Merchant Who Can’t Count",
-  ],
   "hero.subtitle": [
     "삶은 계산하며 살아가되, 사람에게는 계산하지 않는다.",
     "I calculate my way through life, but never keep score with people.",

@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { RecognitionShowcase } from "@/components/RecognitionShowcase";
 import { getPortfolioData } from "@/lib/repository";
 import type { Locale } from "@/lib/types";
-import { categoryLabel, textValue } from "@/lib/presentation";
+import { textValue } from "@/lib/presentation";
 export const dynamic = "force-dynamic";
 export default async function RecognitionArchive({
   params,
@@ -28,28 +29,13 @@ export default async function RecognitionArchive({
             : "Competition awards, scholarships, and acquired credentials."}
         </p>
         {d.recognitions.length > 0 ? (
-          <div className="recognition-list">
-            {[...d.recognitions]
-              .sort((a, b) =>
-                (b.awarded_at || "").localeCompare(a.awarded_at || ""),
-              )
-              .map((r) => (
-                <div className="recognition-item" key={r.id}>
-                  <span>{r.awarded_at?.slice(0, 10) || "—"}</span>
-                  <div>
-                    <h2>
-                      {lang === "en" && r.title_en ? r.title_en : r.title}
-                    </h2>
-                    <p>
-                      {lang === "en" && r.award_name_en
-                        ? r.award_name_en
-                        : r.award_name}
-                    </p>
-                  </div>
-                  <strong>{categoryLabel(r.recognition_type, lang)}</strong>
-                </div>
-              ))}
-          </div>
+          <RecognitionShowcase
+            recognitions={[...d.recognitions].sort((a, b) =>
+              (b.awarded_at || "").localeCompare(a.awarded_at || ""),
+            )}
+            projects={d.projects}
+            lang={lang}
+          />
         ) : (
           <p className="empty-note">
             {ko ? "공개된 수상 이력이 없습니다." : "No public awards yet."}

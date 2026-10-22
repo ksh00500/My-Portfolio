@@ -13,6 +13,7 @@
     "db:verify": "node scripts/verify-existing-db.mjs",
     "check:static": "node scripts/static-contract-check.mjs",
     "check:content": "node scripts/check-content.mjs",
+    "check:atlas": "node scripts/check-atlas.mjs",
     "check:smoke": "node scripts/smoke-readonly.mjs",
     "db:audit": "node scripts/audit-live-data.mjs"
   },
