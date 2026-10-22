@@ -16,6 +16,7 @@ For a production-build preview, run `npm run build` followed by `npm run preview
 ## Presentation and content
 
 - Self-hosted Pretendard variable font, with its OFL license under `public/fonts/`; no external font CSS requests.
+- Shared Korean word wrapping covers titles, prose, roles, and metadata. Headings balance lines, paragraphs avoid short trailing lines where supported, and compact actions wrap as whole controls. Narrow screens release decorative hard breaks; long email addresses and filenames retain overflow protection.
 - Cinematic scene sequence: ink opening → forest featured project → light project archive → slate experience → blue engineering → amber awards → ink contact. The original section color and scroll concept is developed through distinct compositions rather than a uniform dark theme.
 - The featured project has three acts (overview, implementation, results), with a sticky visual that follows the active act on desktop. Mobile uses normal document flow. The page retains native scrolling, accessible scene links, reduced-motion support, and a separate print layout.
 - The opening uses large typography, a perspective light plane and a next-scene link instead of the former side card. Scroll progress changes the light's position; scene colors also carry through the navigation indicator.

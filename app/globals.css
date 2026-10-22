@@ -75,6 +75,10 @@
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Korean prose wraps at spaces; only oversized tokens may break as a fallback. */
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: strict;
   }
   h1,
   h2,
@@ -84,10 +88,12 @@
     letter-spacing: -0.045em;
     font-weight: 650;
     word-break: keep-all;
+    text-wrap: balance;
   }
   p {
     word-break: keep-all;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    text-wrap: pretty;
   }
   ::selection {
     background: #d3e9bb;
@@ -131,6 +137,8 @@
     line-height: 1.5;
     padding: 10px 0;
     white-space: nowrap;
+    flex-shrink: 0;
+    max-width: 100%;
   }
   .text-link > span:last-child {
     transition: transform 200ms var(--ease);
@@ -149,6 +157,9 @@
     font-weight: 550;
     border: 1px solid transparent;
     border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    max-width: 100%;
     transition:
       background 180ms var(--ease),
       transform 180ms var(--ease);
@@ -193,6 +204,34 @@
   }
 }
 @layer components {
+  /* Let content use its column instead of forcing it into a narrow flex item. */
+  :where(
+    .section-heading, .about-grid, .skills-layout, .skill-category,
+    .project-card-body, .archive-row, .experience-archive-row,
+    .recognition-item, .award-row, .case-columns, .case-metrics,
+    .opening-topline, .opening-bottom, .opening-next, .opening-footer,
+    .feature-sequence-heading, .sequence, .sequence-act, .sequence-metrics
+  ) > * {
+    min-width: 0;
+  }
+  .link-label {
+    min-width: 0;
+  }
+  .card-meta > span,
+  .case-labels > span,
+  .language-switch,
+  .career-type {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .text-link > span[aria-hidden],
+  .button > span[aria-hidden],
+  .skill-detail a > span[aria-hidden],
+  .project-card-body h3 > span[aria-hidden],
+  .opening-next strong > span[aria-hidden],
+  .asset-row a > span[aria-hidden] {
+    flex-shrink: 0;
+  }
   .preview-banner {
     padding: 7px 20px;
     text-align: center;
@@ -464,6 +503,7 @@
   /* Projects */
   .section-heading {
     display: flex;
+    flex-wrap: wrap;
     align-items: end;
     justify-content: space-between;
     gap: 36px;
@@ -525,7 +565,7 @@
   }
   .project-facts dd {
     color: #e0e9dc;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   .featured-visual {
     position: relative;
@@ -579,7 +619,7 @@
     letter-spacing: -0.07em;
     font-weight: 450;
     line-height: 1.1;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     transition: transform 400ms var(--ease);
   }
   .featured-visual:hover > strong {
@@ -659,7 +699,7 @@
     max-width: 88%;
     line-height: 1.2;
     word-break: keep-all;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   .visual-arrow {
     position: absolute;
@@ -675,6 +715,7 @@
   }
   .card-meta {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     gap: 10px;
     font-size: 10px;
@@ -688,7 +729,7 @@
     line-height: 1.4;
     margin: 13px 0;
   }
-  .project-card-body h3 > span {
+  .project-card-body h3 > span[aria-hidden] {
     font-size: 17px;
     font-weight: 400;
   }
@@ -717,7 +758,7 @@
     border-radius: 4px;
     color: #4e6053;
     max-width: 100%;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   /* About and experience */
   .about-section {
@@ -743,6 +784,7 @@
   }
   .about-links {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 30px;
   }
@@ -809,6 +851,7 @@
   /* Skills */
   .skills-toolbar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 30px;
@@ -821,12 +864,14 @@
   }
   .segmented {
     display: flex;
+    flex-wrap: wrap;
     padding: 4px;
     background: var(--soft);
     border-radius: 5px;
     gap: 4px;
   }
   .segmented button {
+    flex-shrink: 0;
     min-height: 37px;
     padding: 6px 19px;
     border: 0;
@@ -870,6 +915,7 @@
   }
   .skill-buttons button {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     align-items: center;
     font-size: 12px;
@@ -883,7 +929,7 @@
       background 150ms;
     max-width: 100%;
     text-align: left;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   .skill-buttons button:hover {
     border-color: #78936a;
@@ -893,13 +939,16 @@
     border-color: var(--dark);
     color: #fff;
   }
-  .skill-buttons button > span {
+  .skill-buttons button > span:not(.skill-name) {
     font-size: 8px;
     background: #eff2eb;
     color: #546b49;
     padding: 2px 5px;
     border-radius: 2px;
     white-space: nowrap;
+  }
+  .skill-buttons .skill-name {
+    min-width: 0;
   }
   .skill-detail {
     scroll-margin-top: 105px;
@@ -917,7 +966,7 @@
     font-size: 28px;
     font-weight: 550;
     white-space: pre-line;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   .skill-detail p {
     font-size: 12px;
@@ -1046,7 +1095,7 @@
   }
   .atlas-side h3 {
     font-size: 26px;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     margin: 22px 0 15px;
   }
   .atlas-side p {
@@ -1147,6 +1196,7 @@
   }
   .contact-line {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 30px;
     margin: 35px 0 85px;
@@ -1345,7 +1395,7 @@
     font-weight: 550;
     letter-spacing: -0.06em;
     line-height: 1.2;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
     margin: 20px 0;
   }
   .case-hero > div > p {
@@ -1356,6 +1406,7 @@
   }
   .case-labels {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     font-size: 11px;
     color: var(--accent);
@@ -1396,7 +1447,7 @@
   .case-columns dd {
     margin-top: 5px;
     line-height: 1.9;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   .case-content {
     max-width: 760px;
@@ -1429,7 +1480,7 @@
     line-height: 2;
     font-size: 14px;
     color: #54654d;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
   .case-metrics {
     display: grid;
@@ -1489,6 +1540,7 @@
     display: flex;
     justify-content: space-between;
     gap: 20px;
+    min-width: 0;
   }
   .case-navigation {
     border-top: 1px solid var(--line);

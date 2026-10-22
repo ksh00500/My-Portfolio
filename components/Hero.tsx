@@ -70,7 +70,7 @@ export function Hero({
                 <i>02</i>
               </span>
               <strong>
-                {projectName(featured, lang)}
+                <span className="link-label">{projectName(featured, lang)}</span>
                 <span aria-hidden="true">↗</span>
               </strong>
             </Link>

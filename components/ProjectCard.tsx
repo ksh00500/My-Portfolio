@@ -35,7 +35,7 @@ export function ProjectCard({
           <span>{statusLabel(project.status, lang)}</span>
         </div>
         <h3>
-          {name}
+          <span className="link-label">{name}</span>
           <span aria-hidden="true">↗</span>
         </h3>
         {projectSummary(project, lang) && (

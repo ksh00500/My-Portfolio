@@ -96,7 +96,7 @@ export function Skills({
                         setSelected(selected === t.id ? null : t.id)
                       }
                     >
-                      {t.name}
+                      <span className="skill-name">{t.name}</span>
                       {t.proficiency === "learning" && (
                         <span>{ko ? "학습 중" : "Learning"}</span>
                       )}
@@ -127,7 +127,7 @@ export function Skills({
               {linked.length ? (
                 linked.map((p) => (
                   <Link key={p.id} href={`/${lang}/projects/${p.slug}`}>
-                    {projectName(p, lang)}
+                    <span className="link-label">{projectName(p, lang)}</span>
                     <span aria-hidden="true">↗</span>
                   </Link>
                 ))
@@ -145,7 +145,7 @@ export function Skills({
                 ↗
               </span>
               <h3>
-                {ko ? "기술에서\n프로젝트로." : "From tools\nto projects."}
+                {ko ? "기술에서 프로젝트로." : "From tools to projects."}
               </h3>
               <p>
                 {ko

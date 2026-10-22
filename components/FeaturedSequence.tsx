@@ -124,7 +124,7 @@ export function FeaturedSequence({
             <span>ACT 02</span>
             <span>THE IMPLEMENTATION</span>
           </div>
-          <h3>{ko ? "담당 역할과\n구현" : "Role & implementation"}</h3>
+          <h3>{ko ? "담당 역할과 구현" : "Role & implementation"}</h3>
           {story.role && (
             <div className="sequence-role">
               <small>{ko ? "담당 역할" : "My role"}</small>
