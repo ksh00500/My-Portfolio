@@ -3,7 +3,7 @@ import { getPortfolioData } from "@/lib/repository";
 import { Hero } from "@/components/Hero";
 import { FeaturedSequence } from "@/components/FeaturedSequence";
 import { ProjectCard } from "@/components/ProjectCard";
-import { Skills } from "@/components/Skills";
+import { RecognitionShowcase } from "@/components/RecognitionShowcase";
 import { CopyEmail, PrintResume } from "@/components/Contact";
 import { TechAtlas } from "@/components/TechAtlas";
 import { projectPeriod } from "@/lib/i18n";
@@ -44,7 +44,7 @@ export default async function Home({
   const awards = d.recognitions
     .filter((r) => r.recognition_type === "award")
     .sort((a, b) => (b.awarded_at || "").localeCompare(a.awarded_at || ""))
-    .slice(0, 3);
+    .slice(0, 5);
   const employment = [...d.employment].sort((a, b) =>
     textValue(b.started_at).localeCompare(textValue(a.started_at)),
   );
@@ -264,28 +264,12 @@ export default async function Home({
             </div>
             <p>{c("tech.description")}</p>
           </div>
-          <Skills
+          <TechAtlas
             techs={d.technologies}
             relations={d.projectTechnologies}
             projects={d.projects}
             lang={lang}
           />
-          {d.technologies.length > 0 && (
-            <details className="atlas-disclosure">
-              <summary>
-                {ko
-                  ? "기술과 프로젝트의 관계도 보기"
-                  : "Explore the technology relationship map"}
-                <span aria-hidden="true">+</span>
-              </summary>
-              <TechAtlas
-                techs={d.technologies}
-                relations={d.projectTechnologies}
-                projects={d.projects}
-                lang={lang}
-              />
-            </details>
-          )}
         </div>
       </section>
       {(awards.length > 0 || d.certifications.length > 0) && (
@@ -308,25 +292,12 @@ export default async function Home({
                 <span aria-hidden="true">↗</span>
               </Link>
             </div>
-            <div className="award-list">
-              {awards.map((a) => (
-                <div className="award-row" key={a.id}>
-                  <span className="award-icon" aria-hidden="true">
-                    ✳
-                  </span>
-                  <div>
-                    <h3>
-                      {lang === "en" && a.title_en ? a.title_en : a.title}
-                    </h3>
-                    <p>
-                      {lang === "en" && a.award_name_en
-                        ? a.award_name_en
-                        : a.award_name}
-                    </p>
-                  </div>
-                  <time>{a.awarded_at?.slice(0, 7) || "—"}</time>
-                </div>
-              ))}
+            <RecognitionShowcase
+              recognitions={awards}
+              projects={d.projects}
+              lang={lang}
+            />
+            <div className="award-list credential-list">
               {d.certifications.map((cert) => (
                 <div className="award-row" key={textValue(cert.id)}>
                   <span className="award-icon" aria-hidden="true">

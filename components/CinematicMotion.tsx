@@ -66,7 +66,7 @@ export function CinematicMotion() {
     addEventListener("resize", scroll);
     const elements = Array.from(
       document.querySelectorAll<HTMLElement>(
-        ".section-heading,.project-card,.about-intro,.career-row,.award-row,.feature-sequence-heading,.sequence-act",
+        ".section-heading,.project-card,.about-intro,.career-row,.award-row,.honor-card,.feature-sequence-heading,.sequence-act",
       ),
     );
     let observer: IntersectionObserver | undefined;

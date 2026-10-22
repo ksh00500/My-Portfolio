@@ -49,9 +49,6 @@ export function Nav({ lang, name }: { lang: Locale; name: string }) {
           href={`/${lang}`}
           onClick={() => setOpen(false)}
         >
-          <span className="brand-symbol" aria-hidden="true">
-            s.
-          </span>
           <span>{name}</span>
         </Link>
         <nav

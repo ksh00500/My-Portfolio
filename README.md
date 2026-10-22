@@ -21,7 +21,8 @@ For a production-build preview, run `npm run build` followed by `npm run preview
 - The featured project has three acts (overview, implementation, results), with a sticky visual that follows the active act on desktop. Mobile uses normal document flow. The page retains native scrolling, accessible scene links, reduced-motion support, and a separate print layout.
 - The opening uses large typography, a perspective light plane and a next-scene link instead of the former side card. Scroll progress changes the light's position; scene colors also carry through the navigation indicator.
 - Project search by name/description/role, translated status labels, clear filters, and missing-date handling.
-- Skills can be filtered by recorded proficiency and selected to inspect actual project links. The optional relationship map remains available.
+- The technical section opens with a readable mind map: category branches → skill nodes → recorded project connections. Search, proficiency filters, map/list views, and bidirectional project/technology selection share the same records. Disconnected and planned nodes remain visible; counts use distinct valid relations and do not represent proficiency scores.
+- Recognition uses an amber award-room composition with engraved laurel medallions, a large first record, supporting award cards, and links to related projects. The same cards appear in the recognition archive. The navigation shows the name without a decorative initial.
 - Confirmed participation only in the public experience page. Unconfirmed program records remain in the database and administrator; they are not presented as achievements.
 - Email is configured through `contact.email` in `lib/site-content.ts`. The user-provided default is `ksh.05.ow@gmail.com`.
 - The PDF button opens the browser print dialog. Print styles remove navigation and decorative covers. It does not claim that a separate PDF has already been generated.
