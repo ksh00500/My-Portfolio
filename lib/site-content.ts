@@ -23,19 +23,20 @@ export const defaultSiteContent: Copy = {
     ko: "직접 만든 서비스와 참여한 프로젝트를 살펴보세요.",
     en: "Products I built and projects I contributed to.",
   },
-  "tech.title": { ko: "프로젝트에 사용한 기술", en: "Tools I work with" },
+  "tech.title": { ko: "사용하고 배운 기술", en: "Technologies I use and learn" },
   "tech.description": {
-    ko: "활용 중인 기술과 학습 중인 기술을 구분해 정리했습니다.",
-    en: "Technologies I use, alongside those I am currently learning.",
+    ko: "프로젝트와 실무·교육·수상·활동·자격의 기록에서 기술 경험을 확인할 수 있습니다.",
+    en: "Explore technology experience across projects, work, education, awards, activities, and credentials.",
   },
   "recognition.title": { ko: "수상 및 자격", en: "Awards & credentials" },
   "experience.title": { ko: "경력과 교육", en: "Experience & education" },
   "ending.title": { ko: "더 이야기 나누고 싶다면.", en: "Let’s get in touch." },
-  "contact.email": { ko: "ksh.05.ow@gmail.com", en: "ksh.05.ow@gmail.com" },
+  "contact.email": { ko: "ksh@keyda.site", en: "ksh@keyda.site" },
 };
 
 // Retire previous template copy without overwriting custom text or mutating DB rows.
 const retired: Record<string, string[]> = {
+  "contact.email": ["ksh.05.ow@gmail.com"],
   "hero.subtitle": [
     "삶은 계산하며 살아가되, 사람에게는 계산하지 않는다.",
     "I calculate my way through life, but never keep score with people.",

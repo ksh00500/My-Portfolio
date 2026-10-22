@@ -23,7 +23,19 @@ export interface Recognition {id:string;title:string;title_en:string|null;recogn
 export interface Experience {id:string;name:string;name_en:string|null;category:string;organization:string|null;role:string|null;role_en?:string|null;started_at:string|null;ended_at:string|null;period_label:string|null;status:string|null;is_ongoing:boolean;is_highlight:boolean;[key:string]:unknown}
 export interface Participation {id:string;title:string;started_at:string|null;ended_at:string|null;attendance_status:string;[key:string]:unknown}
 export type Copy = Record<string,{ko:string|null;en:string|null}>;
-export interface PortfolioData {profile:Record<string,unknown>|null;projects:Project[];technologies:Technology[];projectTechnologies:Relation[];projectMetrics:Metric[];experiences:Experience[];recognitions:Recognition[];participations:Participation[];leadership:Record<string,unknown>[];employment:Record<string,unknown>[];education:Record<string,unknown>[];certifications:Record<string,unknown>[];mediaAssets:Record<string,unknown>[];assetLinks:Record<string,unknown>[];content:Copy;}
+export type TechnologyEvidenceKind = 'practice' | 'learning' | 'attendance' | 'credential';
+export type TechnologySourceKind = 'experience' | 'recognition' | 'participation' | 'education' | 'employment' | 'leadership' | 'certification';
+export interface TechnologyEvidence {
+ id:string;technology_id:string;evidence_kind:TechnologyEvidenceKind;evidence_note:string;is_public:boolean;
+ experience_id?:string|null;recognition_id?:string|null;participation_id?:string|null;education_id?:string|null;
+ employment_id?:string|null;leadership_id?:string|null;certification_id?:string|null;
+}
+export interface TechnologyContext {
+ id:string;technologyId:string;canonicalKey:string;sourceKind:TechnologySourceKind;
+ family:'work'|'education'|'award'|'activity'|'certification';
+ title:string;note:string;evidenceKind:TechnologyEvidenceKind;
+}
+export interface PortfolioData {profile:Record<string,unknown>|null;projects:Project[];technologies:Technology[];projectTechnologies:Relation[];projectMetrics:Metric[];experiences:Experience[];recognitions:Recognition[];participations:Participation[];leadership:Record<string,unknown>[];employment:Record<string,unknown>[];education:Record<string,unknown>[];certifications:Record<string,unknown>[];mediaAssets:Record<string,unknown>[];assetLinks:Record<string,unknown>[];content:Copy;technologyContexts?:TechnologyContext[];}
 export const translate=(content:Copy,key:string,lang:Locale,fallback='')=>content[key]?.[lang]||content[key]?.ko||fallback;
 export const projectSummary=(p:Project,lang:Locale)=> (lang==='en'?(p.summary_en||p.summary):(p.summary_ko||p.summary)) || p.summary || p.description || '';
 export const projectDescription=(p:Project,lang:Locale)=> (lang==='en'?(p.description_en||p.description):(p.description_ko||p.description)) || p.description || projectSummary(p,lang);

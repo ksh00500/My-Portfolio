@@ -2,6 +2,7 @@ import "server-only";
 import { rows } from "./db";
 import { tableInfo, quoted } from "./schema-introspection";
 import { resolveSiteContent } from "./site-content";
+import { resolveTechnologyContexts } from "./technology-evidence";
 import { cache } from "react";
 import type {
   PortfolioData,
@@ -13,6 +14,7 @@ import type {
   Experience,
   Participation,
   Copy,
+  TechnologyEvidence,
 } from "./types";
 
 const publicEntities = new Set([
@@ -29,6 +31,7 @@ const publicEntities = new Set([
   "certifications",
   "media_assets",
   "site_content",
+  "technology_evidence",
 ]);
 const safeRecord = (row: Record<string, unknown>): Record<string, unknown> => {
   const {
@@ -167,6 +170,8 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
     mediaAssets,
     assetLinks,
     contents,
+    technologyEvidence,
+    projectExperiences,
   ] = await Promise.all([
     readPublic<Record<string, unknown>>(
       "profiles",
@@ -226,6 +231,8 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
       "site_content",
       ["display_order", "key"],
     ),
+    readPublic<TechnologyEvidence>("technology_evidence", ["created_at", "id"]),
+    readPublic<{project_id:string;experience_id:string}>("project_experiences", ["project_id", "experience_id"]),
   ]);
   const projects = projectsRaw.map(normalProject),
     technologies = technologiesRaw.map(normalTechnology);
@@ -280,7 +287,7 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
     .filter((a) => linkedAssetIds.has(String(a.id)))
     .map(safeRecord);
   const profile = profilesRaw[0] ? safeRecord(profilesRaw[0]) : null;
-  return {
+  const data: PortfolioData = {
     profile,
     projects,
     technologies,
@@ -351,6 +358,8 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
     assetLinks: visibleLinks.map(safeRecord),
     content: copy,
   };
+  data.technologyContexts = resolveTechnologyContexts(technologyEvidence, data, projectExperiences);
+  return data;
 });
 export async function getProjectBySlug(slug: string) {
   const data = await getPortfolioData();
@@ -373,6 +382,7 @@ export async function inspectPublicSchema() {
     "media_assets",
     "asset_links",
     "site_content",
+    "technology_evidence",
   ];
   return Promise.all(
     names.map(async (table) => {

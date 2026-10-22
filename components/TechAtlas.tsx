@@ -5,22 +5,27 @@ import { useId, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { buildTechAtlas, TECH_CATEGORY_COLORS } from "@/lib/tech-atlas";
 import { TechBubbleMap } from "@/components/TechBubbleMap";
+import { TechEvidencePanel } from "@/components/TechEvidencePanel";
+import { technologyContextCounts } from "@/lib/technology-evidence";
 import { categoryLabel, projectName, statusLabel } from "@/lib/presentation";
 import { projectSummary } from "@/lib/types";
-import type { Locale, Technology, Relation, Project } from "@/lib/types";
+import type { Locale, Technology, Relation, Project, TechnologyContext } from "@/lib/types";
 
 type Selection = { kind: "tech" | "project"; id: string } | null;
+const EMPTY_CONTEXTS: TechnologyContext[] = [];
 
 export function TechAtlas({
   techs,
   relations,
   projects,
   lang,
+  contexts = EMPTY_CONTEXTS,
 }: {
   techs: Technology[];
   relations: Relation[];
   projects: Project[];
   lang: Locale;
+  contexts?: TechnologyContext[];
 }) {
   const ko = lang === "ko";
   const id = useId();
@@ -66,13 +71,19 @@ export function TechAtlas({
     [model],
   );
   const maximum = Math.max(1, ...Object.values(counts));
-  const visible = model.techs.filter(
-    (t) =>
-      (proficiency === "all" || t.proficiency === proficiency) &&
-      (categoryFilter === "all" || t.category === categoryFilter) &&
-      `${t.name} ${t.category} ${categoryLabel(t.category, lang)}`
-        .toLocaleLowerCase()
-        .includes(query.trim().toLocaleLowerCase()),
+  const contextCounts = useMemo(() => technologyContextCounts(contexts), [contexts]);
+  const selectedContexts = selectedTech ? contexts.filter(context => context.technologyId === selectedTech.id) : [];
+  const visible = useMemo(
+    () =>
+      model.techs.filter(
+        (t) =>
+          (proficiency === "all" || t.proficiency === proficiency) &&
+          (categoryFilter === "all" || t.category === categoryFilter) &&
+          `${t.name} ${t.category} ${categoryLabel(t.category, lang)}`
+            .toLocaleLowerCase()
+            .includes(query.trim().toLocaleLowerCase()),
+      ),
+    [model, proficiency, categoryFilter, query, lang],
   );
   const families = model.categories
     .map((category) => ({
@@ -123,9 +134,9 @@ export function TechAtlas({
         <div className="atlas-signature">
           <span aria-hidden="true">✳</span>
           <div>
-            <strong>TECH → PROJECT</strong>
+            <strong>TECH → EXPERIENCE</strong>
             <p>
-              {ko ? "기술을 따라 프로젝트로" : "Follow a skill into the work"}
+              {ko ? "기술을 따라 프로젝트와 경험으로" : "Follow a skill into projects and experience"}
             </p>
           </div>
         </div>
@@ -139,8 +150,12 @@ export function TechAtlas({
             <dd>{model.projects.length}</dd>
           </div>
           <div>
-            <dt>{ko ? "연결" : "Links"}</dt>
+            <dt>{ko ? "프로젝트 연결" : "Project links"}</dt>
             <dd>{model.links.length}</dd>
+          </div>
+          <div>
+            <dt>{ko ? "기술 이력" : "Evidence"}</dt>
+            <dd>{new Set(contexts.map(context => context.canonicalKey)).size}</dd>
           </div>
         </dl>
       </div>
@@ -255,8 +270,8 @@ export function TechAtlas({
               <span>{selectedTech.name}</span>
               <a href={`#${id}-detail`}>
                 {ko
-                  ? `프로젝트 ${activeLinks.length}개 보기 ↓`
-                  : `View ${activeLinks.length} projects ↓`}
+                  ? `프로젝트 ${activeLinks.length}개 · 관련 이력 ${contextCounts[selectedTech.id] || 0}건 보기 ↓`
+                  : `View ${activeLinks.length} projects and ${contextCounts[selectedTech.id] || 0} evidence records ↓`}
               </a>
             </div>
           )}
@@ -265,6 +280,7 @@ export function TechAtlas({
               technologies={visible}
               categories={model.categories}
               counts={counts}
+              contextCounts={contextCounts}
               maximum={maximum}
               selectedId={selectedTech?.id}
               projectSelected={Boolean(selectedProject)}
@@ -312,7 +328,7 @@ export function TechAtlas({
                           />
                           <span className="atlas-node-name">
                             {t.name}
-                            <small>{status(t)}</small>
+                            <small>{status(t)}{contextCounts[t.id] ? ` · ${ko ? "관련 이력" : "evidence"} ${contextCounts[t.id]}` : ""}</small>
                           </span>
                           <span
                             className="atlas-node-count"
@@ -358,7 +374,7 @@ export function TechAtlas({
         <aside
           className="atlas-project-panel"
           id={`${id}-detail`}
-          aria-label={ko ? "연결된 프로젝트" : "Connected projects"}
+          aria-label={ko ? "프로젝트와 기술 이력" : "Projects and technology evidence"}
         >
           <div className="atlas-panel-heading">
             <span className="eyebrow">
@@ -470,12 +486,13 @@ export function TechAtlas({
               </p>
             )}
           </div>
+          {selectedTech && <TechEvidencePanel contexts={selectedContexts} lang={lang} />}
         </aside>
       </div>
       <p className="atlas-data-note">
         {ko
-          ? "원 면적은 같은 기준에서 프로젝트 수에 따라 증가합니다. 분야·검색 필터를 바꿔도 크기 기준은 유지합니다. 0개 기술은 별도 구역에 표시하며, 숫자는 실제 연결 수이고 숙련도 점수가 아닙니다."
-          : "Circle area increases with recorded project usage on a fixed scale across filters. Zero-link skills appear separately. Counts represent distinct projects, not proficiency scores."}
+          ? "원 면적은 고유 프로젝트 수에 따라 증가하며, 분야·검색 필터를 바꿔도 크기 기준은 유지합니다. 실무·교육·수상·활동·자격의 기술 이력은 별도로 표시합니다. 같은 활동의 중복 기록은 하나로 집계하고, 학습·참관을 프로젝트 사용 횟수에 더하지 않습니다."
+          : "Circle area represents distinct projects on a fixed scale. Work, education, awards, activities and credentials appear separately. Duplicate records of one event count once; learning and attendance do not increase project usage."}
       </p>
     </div>
   );
