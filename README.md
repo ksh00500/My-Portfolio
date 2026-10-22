@@ -16,7 +16,7 @@ For a production-build preview, run `npm run build` followed by `npm run preview
 ## Presentation and content
 
 - Self-hosted Pretendard variable font, with its OFL license under `public/fonts/`; no external font CSS requests.
-- Light neutral surfaces, dark green project feature, consistent spacing, responsive navigation, visible keyboard focus, and reduced-motion support.
+- Cinematic dark surfaces, moving projector light, large sans-serif typography, film frames, section lighting, chapter navigation, and nonblocking scroll reveals. Responsive navigation, keyboard focus and reduced-motion support are retained.
 - Project search by name/description/role, translated status labels, clear filters, and missing-date handling.
 - Skills can be filtered by recorded proficiency and selected to inspect actual project links. The optional relationship map remains available.
 - Confirmed participation only in the public experience page. Unconfirmed program records remain in the database and administrator; they are not presented as achievements.

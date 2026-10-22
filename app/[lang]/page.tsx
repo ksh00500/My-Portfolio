@@ -63,12 +63,13 @@ export default async function Home({
       <section
         className="section projects-section"
         id="projects"
+        data-chapter="02 / PROJECTS"
         aria-labelledby="projects-title"
       >
         <div className="wrap">
           <div className="section-heading">
             <div>
-              <span className="eyebrow">01 / SELECTED WORK</span>
+              <span className="eyebrow">02 / SELECTED WORK</span>
               <h2 id="projects-title">{c("projects.title")}</h2>
             </div>
             <Link className="text-link" href={`/${lang}/projects`}>
@@ -168,11 +169,12 @@ export default async function Home({
       <section
         className="section about-section"
         id="about"
+        data-chapter="03 / EXPERIENCE"
         aria-labelledby="about-title"
       >
         <div className="wrap about-grid">
           <div className="about-intro">
-            <span className="eyebrow">02 / ABOUT</span>
+            <span className="eyebrow">03 / ABOUT</span>
             <h2 id="about-title">{c("about.title")}</h2>
             <p>{c("about.description")}</p>
             <div className="about-links">
@@ -248,12 +250,13 @@ export default async function Home({
       <section
         className="section tech-section"
         id="tech"
+        data-chapter="04 / ENGINEERING"
         aria-labelledby="skills-title"
       >
         <div className="wrap">
           <div className="section-heading">
             <div>
-              <span className="eyebrow">03 / TECHNICAL SKILLS</span>
+              <span className="eyebrow">04 / TECHNICAL SKILLS</span>
               <h2 id="skills-title">{c("tech.title")}</h2>
             </div>
             <p>{c("tech.description")}</p>
@@ -286,12 +289,13 @@ export default async function Home({
         <section
           className="section awards-section"
           id="recognition"
+          data-chapter="05 / RECOGNITION"
           aria-labelledby="awards-title"
         >
           <div className="wrap">
             <div className="section-heading">
               <div>
-                <span className="eyebrow">04 / RECOGNITION</span>
+                <span className="eyebrow">05 / RECOGNITION</span>
                 <h2 id="awards-title">{c("recognition.title")}</h2>
               </div>
               <Link href={`/${lang}/recognition`} className="text-link">
@@ -334,7 +338,11 @@ export default async function Home({
           </div>
         </section>
       )}
-      <footer className="contact-section" id="contact">
+      <footer
+        className="contact-section"
+        id="contact"
+        data-chapter="06 / CONTACT"
+      >
         <div className="wrap">
           <span className="eyebrow">CONTACT</span>
           <div className="contact-heading">

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getPortfolioData } from "@/lib/repository";
 import { Nav } from "@/components/Nav";
 import { DocumentLanguage } from "@/components/DocumentLanguage";
+import { CinematicMotion } from "@/components/CinematicMotion";
 import type { Locale } from "@/lib/types";
 export const dynamic = "force-dynamic";
 export async function generateMetadata({
@@ -54,6 +55,7 @@ export default async function LanguageLayout({
         </div>
       )}
       <Nav lang={lang as Locale} name={name} />
+      <CinematicMotion />
       <main id="main-content" lang={lang}>
         {children}
       </main>

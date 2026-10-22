@@ -1,4 +1,4 @@
-@layer reset, base, components, responsive, print;
+@layer reset, base, components, responsive, cinematic, print;
 
 @layer reset {
   * {

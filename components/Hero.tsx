@@ -19,11 +19,20 @@ export function Hero({
 }) {
   const ko = lang === "ko";
   return (
-    <section className="hero" aria-labelledby="intro-title">
+    <section
+      className="hero"
+      aria-labelledby="intro-title"
+      data-chapter="01 / INTRO"
+    >
+      <div className="hero-beam" aria-hidden="true" />
+      <div className="hero-frame" aria-hidden="true">
+        <span>01 — PORTFOLIO</span>
+        <span>FULL-STACK DEVELOPMENT</span>
+      </div>
       <div className="wrap">
         <div className="hero-kicker">
           <span className="status-dot" />
-          {ko ? "김시호의 개발 포트폴리오" : "SIHO KIM / DEVELOPER PORTFOLIO"}
+          {ko ? "01 / INTRO — 김시호" : "01 / INTRO — SIHO KIM"}
           <span className="edition">WEB · SERVER · DATA</span>
         </div>
         <div className="hero-grid">
