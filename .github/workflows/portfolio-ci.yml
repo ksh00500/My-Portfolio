@@ -1,0 +1,35 @@
+name: Portfolio CI
+
+on:
+  push:
+    branches:
+      - main
+      - refactor/postgres17-live-schema-compat-20261021
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Static schema contract checks
+        run: npm run check:static
+      - name: TypeScript typecheck
+        run: npm run typecheck
+      - name: Next.js production build
+        run: npm run build
+      - name: Docker image build
+        run: docker build -t portfolio-ci:check .
