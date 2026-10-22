@@ -66,13 +66,17 @@ export function TechAtlas({
     [model],
   );
   const maximum = Math.max(1, ...Object.values(counts));
-  const visible = model.techs.filter(
-    (t) =>
-      (proficiency === "all" || t.proficiency === proficiency) &&
-      (categoryFilter === "all" || t.category === categoryFilter) &&
-      `${t.name} ${t.category} ${categoryLabel(t.category, lang)}`
-        .toLocaleLowerCase()
-        .includes(query.trim().toLocaleLowerCase()),
+  const visible = useMemo(
+    () =>
+      model.techs.filter(
+        (t) =>
+          (proficiency === "all" || t.proficiency === proficiency) &&
+          (categoryFilter === "all" || t.category === categoryFilter) &&
+          `${t.name} ${t.category} ${categoryLabel(t.category, lang)}`
+            .toLocaleLowerCase()
+            .includes(query.trim().toLocaleLowerCase()),
+      ),
+    [model, proficiency, categoryFilter, query, lang],
   );
   const families = model.categories
     .map((category) => ({

@@ -12,7 +12,12 @@ const { outputText } = ts.transpileModule(source, {
     target: ts.ScriptTarget.ES2022,
   },
 });
-const { buildTechAtlas, techBubbleRadius, layoutTechBubbles } = await import(
+const {
+  buildTechAtlas,
+  techBubbleRadius,
+  layoutTechBubbles,
+  techBubblesOverlap,
+} = await import(
   "data:text/javascript;base64," + Buffer.from(outputText).toString("base64")
 );
 const technologies = [
@@ -107,6 +112,15 @@ assert.deepEqual(
 );
 assert.equal(buildTechAtlas([], [], relations).links.length, 0);
 const radii = [0, 1, 2, 5, 10].map((count) => techBubbleRadius(count, 10));
+for (let count = 0; count <= 10; count++) {
+  const previousRadius = Math.sqrt(
+    34 ** 2 + ((88 ** 2 - 34 ** 2) * count) / 10,
+  );
+  assert.ok(
+    techBubbleRadius(count, 10) <= previousRadius * 0.5,
+    "every circle must be at most half its previous diameter",
+  );
+}
 assert.ok(radii.every((radius) => Number.isFinite(radius) && radius > 0));
 assert.ok(
   radii.every((radius, index) => !index || radius > radii[index - 1]),
@@ -120,40 +134,53 @@ assert.ok(
   Math.max(...areaSteps) - Math.min(...areaSteps) < 1e-8,
   "equal usage increments must add equal area, not equal radius",
 );
-for (const size of [0, 1, 8, 27, 50]) {
-  const items = Array.from({ length: size }, (_, index) => ({
-    id: `t${index}`,
-    count: 1 + (index % 10),
-  }));
-  const before = structuredClone(items);
-  const map = layoutTechBubbles(items, 10);
-  assert.equal(map.nodes.length, size);
-  assert.deepEqual(
-    layoutTechBubbles(items, 10),
-    map,
-    "layout must be stable across server/client renders",
-  );
-  assert.deepEqual(items, before);
-  for (const node of map.nodes) {
-    assert.ok(
-      node.left >= 0 &&
-        node.right <= map.width &&
-        node.top >= 0 &&
-        node.bottom <= map.height,
-      "labels and circles must stay inside the chart",
+for (const width of [480, 760, 900])
+  for (const size of [0, 1, 8, 27, 50]) {
+    const items = Array.from({ length: size }, (_, index) => ({
+      id: `t${index}`,
+      count: 1 + (index % 10),
+    }));
+    const before = structuredClone(items);
+    const map = layoutTechBubbles(items, 10, width);
+    assert.equal(map.nodes.length, size);
+    assert.deepEqual(
+      layoutTechBubbles(items, 10, width),
+      map,
+      "layout must be stable across server/client renders",
     );
-    for (const other of map.nodes) {
-      if (node.id === other.id) continue;
+    assert.deepEqual(items, before);
+    if (size)
       assert.ok(
-        node.right <= other.left ||
-          other.right <= node.left ||
-          node.bottom <= other.top ||
-          other.bottom <= node.top,
-        "circle and label bounds must not overlap",
+        Math.min(...map.nodes.map((node) => node.top)) <= 16,
+        "crop the top whitespace to the actual content",
+      );
+    if (size === 27 && width === 760) {
+      assert.ok(
+        map.height <= 580,
+        `27 technologies should fit a compact chart, got ${map.height}`,
+      );
+      assert.ok(
+        new Set(map.nodes.map((node) => Math.round(node.y))).size >= 22,
+        "avoid aligned grid rows",
       );
     }
+    for (const node of map.nodes) {
+      assert.ok(
+        node.left >= 0 &&
+          node.right <= map.width &&
+          node.top >= 0 &&
+          node.bottom <= map.height,
+        "labels and circles must stay inside the chart",
+      );
+      for (const other of map.nodes) {
+        if (node.id === other.id) continue;
+        assert.ok(
+          !techBubblesOverlap(node, other),
+          "circles and label rectangles must not overlap",
+        );
+      }
+    }
   }
-}
 console.log(
   "Atlas checks passed: real links, deduplicated counts, isolated nodes, area scaling, deterministic packing, no label overlap, immutable inputs.",
 );
