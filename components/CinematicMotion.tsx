@@ -120,9 +120,6 @@ export function CinematicMotion() {
           className="scene-index"
           aria-label={path.startsWith("/en") ? "Page sections" : "페이지 섹션"}
         >
-          <span className="scene-index-title" aria-hidden="true">
-            CHAPTERS
-          </span>
           {scenes.map((scene, index) => (
             <a
               key={scene.id}

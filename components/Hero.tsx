@@ -30,7 +30,6 @@ export function Hero({
         <div className="light-plane" />
         <div className="light-rim" />
         <div className="light-horizon" />
-        <span className="light-point" />
       </div>
       <div className="opening-guide" aria-hidden="true">
         <span>01 / INTRO</span>
