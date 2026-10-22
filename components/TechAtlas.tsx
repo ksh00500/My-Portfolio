@@ -1,49 +1,499 @@
-'use client';
-import {useMemo,useState,useRef} from 'react';
-import Link from 'next/link';
-import type {Locale,Technology,Relation,Project} from '@/lib/types';
-const W=1200,H=790;
-function hash(s:string){let v=2166136261;for(let i=0;i<s.length;i++)v=Math.imul(v^s.charCodeAt(i),16777619);return v>>>0}
-function rand(seed:number){let n=seed>>>0;return()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296}}
-interface Node extends Technology{x:number;y:number;r:number;degree:number;projects:Project[]}
-type Edge={a:string;b:string;count:number}
-function layout(techs:Technology[],relations:Relation[],projects:Project[]){
- const projectById=new Map(projects.map(p=>[p.id,p]));
- const linksByTech=new Map<string,Project[]>();
- for(const t of techs)linksByTech.set(t.id,[]);
- for(const r of relations){const p=projectById.get(r.project_id);if(p)linksByTech.get(r.technology_id)?.push(p)}
- const maxDegree=Math.max(1,...Array.from(linksByTech.values()).map(a=>a.length));
- const nodes:Node[]=techs.map(t=>{const ps=linksByTech.get(t.id)||[];const degree=ps.length;const rng=rand(hash(t.id+t.name));const d=degree/maxDegree;const theta=rng()*Math.PI*2;const radius=95+(1-d)*220+(rng()-.5)*90;return {...t,degree,projects:ps,r:19+Math.pow(d,.62)*42,x:W/2+Math.cos(theta)*radius*1.32,y:H/2+Math.sin(theta)*radius*.95}});
- const edges:Edge[]=[];
- for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){const a=nodes[i],b=nodes[j];const count=a.projects.filter(p=>b.projects.some(q=>p.id===q.id)).length;if(count)edges.push({a:a.id,b:b.id,count})}
- const lookup=new Map(nodes.map(n=>[n.id,n]));
- // Deterministic force relaxation: no grid, stable across page loads.
- for(let iter=0;iter<220;iter++){
-  for(const a of nodes){
-   let fx=0,fy=0;
-   const dx=a.x-W/2,dy=a.y-H/2;const dist=Math.hypot(dx,dy)||1;
-   const target=85+(1-a.degree/maxDegree)*240;
-   fx+=(target-dist)*(dx/dist)*.013;fy+=(target-dist)*(dy/dist)*.013;
-   for(const b of nodes){if(a===b)continue;const vx=a.x-b.x,vy=a.y-b.y,d=Math.hypot(vx,vy)||1;const required=a.r+b.r+18;if(d<required){fx+=(required-d)*vx/d*.054;fy+=(required-d)*vy/d*.054}}
-   for(const e of edges){const peer=e.a===a.id?lookup.get(e.b):e.b===a.id?lookup.get(e.a):null;if(!peer)continue;fx+=(peer.x-a.x)*.00075*Math.min(3,e.count);fy+=(peer.y-a.y)*.00075*Math.min(3,e.count)}
-   a.x=Math.max(a.r+66,Math.min(W-a.r-66,a.x+fx));a.y=Math.max(a.r+66,Math.min(H-a.r-66,a.y+fy));
-  }
- }
- return {nodes,edges,lookup};
-}
-export function TechAtlas({techs,relations,projects,lang}:{techs:Technology[];relations:Relation[];projects:Project[];lang:Locale}){
- const graph=useMemo(()=>layout(techs,relations,projects),[techs,relations,projects]);
- const [selected,setSelected]=useState<string|null>(null);const [camera,setCamera]=useState({x:0,y:0,w:W,h:H});
- const start=useRef<{x:number;y:number;cam:{x:number;y:number;w:number;h:number}}|null>(null);
- const selectedNode=graph.nodes.find(n=>n.id===selected);
- const connectedIds=new Set(graph.edges.filter(e=>e.a===selected||e.b===selected).flatMap(e=>[e.a,e.b]));
- const zoom=(factor:number)=>setCamera(c=>{if(factor===0)return {x:0,y:0,w:W,h:H};const w=Math.min(W,Math.max(400,c.w*factor));const h=Math.min(H,Math.max(300,c.h*factor));return {x:Math.max(0,Math.min(W-w,c.x+(c.w-w)/2)),y:Math.max(0,Math.min(H-h,c.y+(c.h-h)/2)),w,h}});
- const status=(t:Technology)=>t.proficiency==='usable'?(lang==='ko'?'활용 가능':'Using'):t.proficiency==='learning'?(lang==='ko'?'학습 중':'Learning'):(lang==='ko'?'학습 예정':'Planned');
- return <div className="atlas-box"><div className="atlas-top"><div className="atlas-legend"><span className="dot-blue"/>{lang==='ko'?'사용 기술':'Technology'} <span className="dot-mint"/>{lang==='ko'?'선택된 기술':'Selected'}</div><div className="atlas-controls"><button onClick={()=>zoom(.8)} aria-label="Zoom in">+</button><button onClick={()=>zoom(1.25)} aria-label="Zoom out">−</button><button onClick={()=>zoom(0)}>FIT</button></div></div>
- <div className="atlas-grid"><div className="atlas-stage" onPointerDown={e=>{if((e.target as Element).closest('[data-tech]'))return;start.current={x:e.clientX,y:e.clientY,cam:camera};e.currentTarget.setPointerCapture(e.pointerId)}} onPointerMove={e=>{if(!start.current)return;const bb=e.currentTarget.getBoundingClientRect();const dx=(e.clientX-start.current.x)*start.current.cam.w/bb.width,dy=(e.clientY-start.current.y)*start.current.cam.h/bb.height;setCamera({...start.current.cam,x:Math.min(W-start.current.cam.w,Math.max(0,start.current.cam.x-dx)),y:Math.min(H-start.current.cam.h,Math.max(0,start.current.cam.y-dy))})}} onPointerUp={()=>start.current=null} onPointerCancel={()=>start.current=null}>
- <svg viewBox={`${camera.x} ${camera.y} ${camera.w} ${camera.h}`} aria-label="Organic technology relationship map" role="group"><defs><radialGradient id="atlaslight"><stop stopColor="#223c4c" stopOpacity=".8"/><stop offset="1" stopColor="#0b111a" stopOpacity="0"/></radialGradient><pattern id="atlasdots" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#708ea1" opacity=".22"/></pattern></defs><rect width={W} height={H} fill="url(#atlasdots)"/><ellipse cx={W/2} cy={H/2} rx="420" ry="300" fill="url(#atlaslight)"/>
- {graph.edges.map(e=>{const a=graph.lookup.get(e.a)!,b=graph.lookup.get(e.b)!;const active=Boolean(selected&&(e.a===selected||e.b===selected));const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;const bend=(hash(e.a+e.b)%50-25);const dist=Math.hypot(b.x-a.x,b.y-a.y)||1;const cx=mx+(b.y-a.y)/dist*bend,cy=my-(b.x-a.x)/dist*bend;return <path key={e.a+e.b} d={`M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}`} fill="none" stroke={active?'#00D2AC':'#7298ae'} strokeWidth={active?2:Math.min(1.6,.6+e.count*.4)} opacity={selected?(active?.93:.07):.28}/>})}
- {graph.nodes.map(n=>{const active=n.id===selected;const faded=Boolean(selected&&!active&&!connectedIds.has(n.id));return <g key={n.id} data-tech={n.id} tabIndex={0} role="button" aria-label={`${n.name}, ${n.degree} projects`} onClick={()=>setSelected(active?null:n.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setSelected(active?null:n.id)}}} style={{cursor:'pointer',opacity:faded?.27:1}}><title>{`${n.name} · ${n.degree} projects`}</title><circle cx={n.x} cy={n.y} r={n.r+7} fill={active?'rgba(0,210,172,.10)':'rgba(70,135,165,.10)'}/><circle cx={n.x} cy={n.y} r={n.r} fill={active?'#12473f':'#1a3b4d'} stroke={active?'#00D2AC':'#8eb5c9'} strokeWidth={active?2.6:1.1}/><text x={n.x} y={n.y+4} textAnchor="middle" fill="#eef7fa" fontSize="12" fontWeight="700">{n.name.replace(/[^A-Za-z0-9]/g,'').slice(0,3).toUpperCase()||'T'}</text><text x={n.x} y={n.y+n.r+18} textAnchor="middle" fill="#e8f1f6" fontSize="12" fontWeight="550">{n.name.length>18?n.name.slice(0,17)+'…':n.name}</text><circle cx={n.x+n.r*.75} cy={n.y-n.r*.75} r="9" fill={active?'#00D2AC':'#9ec6da'}/><text x={n.x+n.r*.75} y={n.y-n.r*.75+3} textAnchor="middle" fontSize="9" fill="#071017" fontWeight="700">{n.degree}</text></g>})}</svg></div>
- <aside className="atlas-side"><span className="eyebrow steel">TECH ATLAS / {graph.nodes.length}</span>{selectedNode?<><h3>{selectedNode.name}</h3><p>{selectedNode.category} · {status(selectedNode)}</p><div className="atlas-stat"><strong>{selectedNode.projects.length}</strong><span>{lang==='ko'?'연결된 프로젝트':'Linked projects'}</span></div>{selectedNode.projects.length?selectedNode.projects.map(p=><Link className="related-link" href={`/${lang}/projects/${p.slug}`} key={p.id}>{p.name}<span>↗</span></Link>):<p>{lang==='ko'?'아직 확인된 프로젝트 연결이 없습니다.':'No confirmed project link yet.'}</p>}</>:<><h3>{lang==='ko'?'기술을 선택해 보세요':'Select a technology'}</h3><p>{lang==='ko'?'큰 원일수록 더 많은 프로젝트에서 사용됐습니다. 주변 곡선은 같은 프로젝트에서 함께 쓰인 기술을 나타냅니다.':'Larger circles represent usage in more projects. Curved links connect technologies used together.'}</p><div className="atlas-stat"><strong>{relations.length}</strong><span>{lang==='ko'?'확인된 기술-프로젝트 관계':'Confirmed project-technology relations'}</span></div></>}</aside></div>
- <div className="atlas-note">{lang==='ko'?'확인된 프로젝트 연결만 집계합니다. 미확인 관계는 임의로 생성하지 않습니다.':'Only confirmed project links are counted; unverified links are not fabricated.'}</div></div>
+"use client";
+
+import Link from "next/link";
+import { useId, useMemo, useState } from "react";
+import type { CSSProperties } from "react";
+import { buildTechAtlas, TECH_CATEGORY_COLORS } from "@/lib/tech-atlas";
+import { TechBubbleMap } from "@/components/TechBubbleMap";
+import { TechEvidencePanel } from "@/components/TechEvidencePanel";
+import { technologyContextCounts } from "@/lib/technology-evidence";
+import { categoryLabel, projectName, statusLabel } from "@/lib/presentation";
+import { projectSummary } from "@/lib/types";
+import type { Locale, Technology, Relation, Project, TechnologyContext } from "@/lib/types";
+
+type Selection = { kind: "tech" | "project"; id: string } | null;
+const EMPTY_CONTEXTS: TechnologyContext[] = [];
+
+export function TechAtlas({
+  techs,
+  relations,
+  projects,
+  lang,
+  contexts = EMPTY_CONTEXTS,
+}: {
+  techs: Technology[];
+  relations: Relation[];
+  projects: Project[];
+  lang: Locale;
+  contexts?: TechnologyContext[];
+}) {
+  const ko = lang === "ko";
+  const id = useId();
+  const model = useMemo(
+    () => buildTechAtlas(techs, projects, relations),
+    [techs, projects, relations],
+  );
+  const [selection, setSelection] = useState<Selection>(null);
+  const [query, setQuery] = useState("");
+  const [proficiency, setProficiency] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [view, setView] = useState("map");
+  const selectedTech =
+    selection?.kind === "tech"
+      ? model.techs.find((t) => t.id === selection.id)
+      : undefined;
+  const selectedProject =
+    selection?.kind === "project"
+      ? model.projects.find((p) => p.id === selection.id)
+      : undefined;
+  const activeLinks = selectedTech
+    ? model.byTech.get(selectedTech.id) || []
+    : selectedProject
+      ? model.byProject.get(selectedProject.id) || []
+      : [];
+  const linkedTechs = new Set(activeLinks.map((l) => l.technologyId));
+  const linkedProjects = new Set(activeLinks.map((l) => l.projectId));
+  const peers = new Set(
+    selectedTech
+      ? model.links
+          .filter((link) => linkedProjects.has(link.projectId))
+          .map((link) => link.technologyId)
+      : [],
+  );
+  const counts = useMemo(
+    () =>
+      Object.fromEntries(
+        model.techs.map((technology) => [
+          technology.id,
+          model.byTech.get(technology.id)?.length || 0,
+        ]),
+      ),
+    [model],
+  );
+  const maximum = Math.max(1, ...Object.values(counts));
+  const contextCounts = useMemo(() => technologyContextCounts(contexts), [contexts]);
+  const selectedContexts = selectedTech ? contexts.filter(context => context.technologyId === selectedTech.id) : [];
+  const visible = useMemo(
+    () =>
+      model.techs.filter(
+        (t) =>
+          (proficiency === "all" || t.proficiency === proficiency) &&
+          (categoryFilter === "all" || t.category === categoryFilter) &&
+          `${t.name} ${t.category} ${categoryLabel(t.category, lang)}`
+            .toLocaleLowerCase()
+            .includes(query.trim().toLocaleLowerCase()),
+      ),
+    [model, proficiency, categoryFilter, query, lang],
+  );
+  const families = model.categories
+    .map((category) => ({
+      category,
+      nodes: visible.filter((t) => t.category === category),
+    }))
+    .filter((g) => g.nodes.length);
+  const displayedProjects = selectedTech
+    ? model.projects.filter((p) => linkedProjects.has(p.id))
+    : model.projects;
+  const status = (t: Technology) =>
+    t.proficiency === "usable"
+      ? ko
+        ? "활용 중"
+        : "Using"
+      : t.proficiency === "learning"
+        ? ko
+          ? "학습 중"
+          : "Learning"
+        : t.proficiency === "planned"
+          ? ko
+            ? "학습 예정"
+            : "Planned"
+          : ko
+            ? "상태 미등록"
+            : "Not recorded";
+  const description =
+    selectedTech &&
+    (lang === "en"
+      ? selectedTech.description_en || selectedTech.description
+      : selectedTech.description_ko || selectedTech.description);
+  const selectTech = (technology: Technology) =>
+    setSelection(
+      selection?.kind === "tech" && selection.id === technology.id
+        ? null
+        : { kind: "tech", id: technology.id },
+    );
+  const clearFilters = () => {
+    setQuery("");
+    setProficiency("all");
+    setCategoryFilter("all");
+    setSelection(null);
+  };
+
+  return (
+    <div className="skill-atlas">
+      <div className="skill-atlas-top">
+        <div className="atlas-signature">
+          <span aria-hidden="true">✳</span>
+          <div>
+            <strong>TECH → EXPERIENCE</strong>
+            <p>
+              {ko ? "기술을 따라 프로젝트와 경험으로" : "Follow a skill into projects and experience"}
+            </p>
+          </div>
+        </div>
+        <dl className="atlas-totals">
+          <div>
+            <dt>{ko ? "기술" : "Skills"}</dt>
+            <dd>{model.techs.length}</dd>
+          </div>
+          <div>
+            <dt>{ko ? "프로젝트" : "Projects"}</dt>
+            <dd>{model.projects.length}</dd>
+          </div>
+          <div>
+            <dt>{ko ? "프로젝트 연결" : "Project links"}</dt>
+            <dd>{model.links.length}</dd>
+          </div>
+          <div>
+            <dt>{ko ? "기술 이력" : "Evidence"}</dt>
+            <dd>{new Set(contexts.map(context => context.canonicalKey)).size}</dd>
+          </div>
+        </dl>
+      </div>
+      <div className="atlas-tools">
+        <label className="atlas-search">
+          <span>{ko ? "기술 찾기" : "Find a skill"}</span>
+          <input
+            type="search"
+            value={query}
+            placeholder={
+              ko ? "기술명 또는 분야 검색" : "Search skills or categories"
+            }
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setSelection(null);
+            }}
+          />
+        </label>
+        <label className="atlas-filter">
+          <span>{ko ? "활용 상태" : "Status"}</span>
+          <select
+            value={proficiency}
+            onChange={(e) => {
+              setProficiency(e.target.value);
+              setSelection(null);
+            }}
+          >
+            <option value="all">{ko ? "전체" : "All"}</option>
+            <option value="usable">{ko ? "활용 중" : "Using"}</option>
+            <option value="learning">{ko ? "학습 중" : "Learning"}</option>
+            <option value="planned">{ko ? "학습 예정" : "Planned"}</option>
+          </select>
+        </label>
+        <div
+          className="atlas-view-switch"
+          role="group"
+          aria-label={ko ? "기술 보기 방식" : "Skill view"}
+        >
+          {["map", "list"].map((value) => (
+            <button
+              type="button"
+              key={value}
+              aria-pressed={view === value}
+              onClick={() => setView(value)}
+            >
+              {value === "map"
+                ? ko
+                  ? "사용 빈도 지도"
+                  : "Usage map"
+                : ko
+                  ? "목록"
+                  : "List"}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div
+        className="bubble-category-legend"
+        role="group"
+        aria-label={ko ? "기술 분야 필터" : "Filter by technology category"}
+      >
+        <button
+          type="button"
+          aria-pressed={categoryFilter === "all"}
+          onClick={() => {
+            setCategoryFilter("all");
+            setSelection(null);
+          }}
+        >
+          {ko ? "모든 분야" : "All categories"}
+        </button>
+        {model.categories.map((category, index) => (
+          <button
+            type="button"
+            key={category}
+            aria-pressed={categoryFilter === category}
+            style={
+              {
+                "--bubble-color":
+                  TECH_CATEGORY_COLORS[index % TECH_CATEGORY_COLORS.length],
+              } as CSSProperties
+            }
+            onClick={() => {
+              setCategoryFilter(categoryFilter === category ? "all" : category);
+              setSelection(null);
+            }}
+          >
+            <i aria-hidden="true" />
+            {categoryLabel(category, lang)}
+          </button>
+        ))}
+      </div>
+      <div className="atlas-explorer">
+        <div className="atlas-constellation" data-view={view} id={`${id}-map`}>
+          <div className="atlas-root">
+            <span className="atlas-root-dot" aria-hidden="true" />
+            <strong>
+              {view === "map" ? "TECH IN PRACTICE" : "FULL-STACK"}
+            </strong>
+            <span>
+              {view === "map"
+                ? ko
+                  ? "원 크기 = 프로젝트 사용 수"
+                  : "Circle area = project usage"
+                : ko
+                  ? "분야 → 기술 → 프로젝트"
+                  : "Category → skill → project"}
+            </span>
+          </div>
+          {selectedTech && (
+            <div className="atlas-current-selection">
+              <span>{selectedTech.name}</span>
+              <a href={`#${id}-detail`}>
+                {ko
+                  ? `프로젝트 ${activeLinks.length}개 · 관련 이력 ${contextCounts[selectedTech.id] || 0}건 보기 ↓`
+                  : `View ${activeLinks.length} projects and ${contextCounts[selectedTech.id] || 0} evidence records ↓`}
+              </a>
+            </div>
+          )}
+          {view === "map" ? (
+            <TechBubbleMap
+              technologies={visible}
+              categories={model.categories}
+              counts={counts}
+              contextCounts={contextCounts}
+              maximum={maximum}
+              selectedId={selectedTech?.id}
+              projectSelected={Boolean(selectedProject)}
+              linkedIds={linkedTechs}
+              peers={peers}
+              detailId={`${id}-detail`}
+              lang={lang}
+              onSelect={selectTech}
+            />
+          ) : (
+            <div className="atlas-families">
+              {families.map(({ category, nodes }, index) => (
+                <section
+                  className="atlas-family"
+                  key={category}
+                  style={{ "--branch-index": index } as CSSProperties}
+                >
+                  <h3>
+                    <span aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    {categoryLabel(category, lang)}
+                  </h3>
+                  <div className="atlas-skill-nodes">
+                    {nodes.map((t) => {
+                      const active = selectedTech?.id === t.id;
+                      const linked = selectedProject && linkedTechs.has(t.id);
+                      const dimmed = selectedProject && !linked;
+                      const count = model.byTech.get(t.id)?.length || 0;
+                      return (
+                        <button
+                          className="atlas-skill-node"
+                          type="button"
+                          key={t.id}
+                          data-status={t.proficiency || "unknown"}
+                          data-linked={linked ? "true" : undefined}
+                          data-dimmed={dimmed ? "true" : undefined}
+                          aria-pressed={active}
+                          aria-controls={`${id}-detail`}
+                          onClick={() => selectTech(t)}
+                        >
+                          <span
+                            className="atlas-node-port"
+                            aria-hidden="true"
+                          />
+                          <span className="atlas-node-name">
+                            {t.name}
+                            <small>{status(t)}{contextCounts[t.id] ? ` · ${ko ? "관련 이력" : "evidence"} ${contextCounts[t.id]}` : ""}</small>
+                          </span>
+                          <span
+                            className="atlas-node-count"
+                            aria-label={
+                              ko
+                                ? `연결된 프로젝트 ${count}개`
+                                : `${count} linked projects`
+                            }
+                          >
+                            {count || "—"}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
+          {!visible.length && (
+            <div className="atlas-empty">
+              <p>
+                {ko ? "조건에 맞는 기술이 없습니다." : "No matching skills."}
+              </p>
+              <button type="button" onClick={clearFilters}>
+                {ko ? "검색·필터 초기화" : "Clear filters"}
+              </button>
+            </div>
+          )}
+          <div className="atlas-map-caption">
+            <span role="status">
+              {ko
+                ? `${model.techs.length}개 중 ${visible.length}개 기술`
+                : `${visible.length} of ${model.techs.length} skills`}
+            </span>
+            <span>
+              {ko
+                ? "선 = 같은 프로젝트에서 함께 사용"
+                : "Lines = used in the same project"}
+            </span>
+          </div>
+        </div>
+        <aside
+          className="atlas-project-panel"
+          id={`${id}-detail`}
+          aria-label={ko ? "프로젝트와 기술 이력" : "Projects and technology evidence"}
+        >
+          <div className="atlas-panel-heading">
+            <span className="eyebrow">
+              {selectedTech
+                ? "SELECTED TECHNOLOGY"
+                : selectedProject
+                  ? "SELECTED PROJECT"
+                  : "PROJECT CONNECTIONS"}
+            </span>
+            {selection && (
+              <button
+                type="button"
+                className="atlas-clear"
+                onClick={() => setSelection(null)}
+              >
+                {ko ? "선택 해제" : "Clear"} ×
+              </button>
+            )}
+          </div>
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            className="atlas-selection-summary"
+          >
+            <h3>
+              {selectedTech?.name ||
+                (selectedProject && projectName(selectedProject, lang)) ||
+                (ko
+                  ? "무엇을 만들었는지까지."
+                  : "From skills to things built.")}
+            </h3>
+            <p>
+              {selectedTech
+                ? `${categoryLabel(selectedTech.category, lang)} · ${status(selectedTech)}`
+                : selectedProject
+                  ? statusLabel(selectedProject.status, lang)
+                  : ko
+                    ? "기술을 누르면 사용한 프로젝트가, 프로젝트를 누르면 사용 기술이 강조됩니다."
+                    : "Select a skill to find its projects, or a project to highlight its stack."}
+            </p>
+            {description && <p>{description}</p>}
+            {selectedProject && (
+              <>
+                <p>{projectSummary(selectedProject, lang)}</p>
+                <Link
+                  className="text-link"
+                  href={`/${lang}/projects/${selectedProject.slug}`}
+                >
+                  {ko ? "프로젝트 상세" : "Read the project"}
+                  <span aria-hidden="true">↗</span>
+                </Link>
+                <p className="atlas-project-stack">
+                  <a href={`#${id}-map`}>
+                    {ko
+                      ? `사용 기술 ${activeLinks.length}개 보기 ↑`
+                      : `Explore ${activeLinks.length} skills ↑`}
+                  </a>
+                </p>
+              </>
+            )}
+          </div>
+          <div className="atlas-project-branches">
+            {displayedProjects.map((p) => {
+              const note =
+                selectedTech &&
+                activeLinks.find((l) => l.projectId === p.id)?.note;
+              return (
+                <div className="atlas-project-branch" key={p.id}>
+                  <button
+                    type="button"
+                    className="atlas-project-node"
+                    aria-pressed={selectedProject?.id === p.id}
+                    onClick={() =>
+                      setSelection(
+                        selectedProject?.id === p.id
+                          ? null
+                          : { kind: "project", id: p.id },
+                      )
+                    }
+                  >
+                    <span className="atlas-project-dot" aria-hidden="true" />
+                    <span>
+                      <strong>{projectName(p, lang)}</strong>
+                      <small>
+                        {statusLabel(p.status, lang)} ·{" "}
+                        {model.byProject.get(p.id)?.length || 0}{" "}
+                        {ko ? "기술" : "skills"}
+                      </small>
+                    </span>
+                    <span aria-hidden="true">↗</span>
+                  </button>
+                  {note && <p className="atlas-usage-note">{note}</p>}
+                  {selectedTech && (
+                    <Link
+                      className="atlas-project-link"
+                      href={`/${lang}/projects/${p.slug}`}
+                    >
+                      {ko ? "상세 보기" : "View project"} ↗
+                    </Link>
+                  )}
+                </div>
+              );
+            })}
+            {!displayedProjects.length && (
+              <p className="atlas-empty-note">
+                {ko
+                  ? "등록된 프로젝트 연결이 없습니다."
+                  : "No project connections recorded."}
+              </p>
+            )}
+          </div>
+          {selectedTech && <TechEvidencePanel contexts={selectedContexts} lang={lang} />}
+        </aside>
+      </div>
+      <p className="atlas-data-note">
+        {ko
+          ? "원 면적은 고유 프로젝트 수에 따라 증가하며, 분야·검색 필터를 바꿔도 크기 기준은 유지합니다. 실무·교육·수상·활동·자격의 기술 이력은 별도로 표시합니다. 같은 활동의 중복 기록은 하나로 집계하고, 학습·참관을 프로젝트 사용 횟수에 더하지 않습니다."
+          : "Circle area represents distinct projects on a fixed scale. Work, education, awards, activities and credentials appear separately. Duplicate records of one event count once; learning and attendance do not increase project usage."}
+      </p>
+    </div>
+  );
 }

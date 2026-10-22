@@ -4,24 +4,36 @@
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
+    "preview": "node scripts/preview.mjs",
+    "preview:production": "node scripts/preview.mjs --production",
     "build": "next build",
     "start": "next start --hostname 0.0.0.0",
-    "db:init": "node scripts/bootstrap.mjs",
-    "db:seed": "node scripts/seed.mjs",
     "typecheck": "tsc --noEmit",
-    "data:check": "node scripts/validate-seed.mjs"
+    "data:check": "node scripts/validate-seed.mjs",
+    "db:verify": "node scripts/verify-existing-db.mjs",
+    "check:static": "node scripts/static-contract-check.mjs",
+    "check:content": "node scripts/check-content.mjs",
+    "check:atlas": "node scripts/check-atlas.mjs",
+    "check:smoke": "node scripts/smoke-readonly.mjs",
+    "db:audit": "node scripts/audit-live-data.mjs",
+    "db:snapshot": "node --env-file=.env scripts/backup-db.mjs",
+    "check:snapshot": "node scripts/check-snapshot.mjs",
+    "db:snapshot:ssh": "node scripts/backup-db-ssh.mjs",
+    "check:evidence": "node scripts/check-evidence.mjs"
   },
   "dependencies": {
     "next": "^16.0.0",
+    "pg": "^8.16.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "pg": "^8.16.0"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.0",
+    "@electric-sql/pglite": "^0.5.11",
+    "@electric-sql/pglite-socket": "^0.2.14",
     "@types/node": "^22.0.0",
+    "@types/pg": "^8.15.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "@types/pg": "^8.15.0"
+    "typescript": "^5.9.0"
   }
 }

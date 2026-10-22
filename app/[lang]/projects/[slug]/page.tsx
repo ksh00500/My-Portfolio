@@ -1,14 +1,240 @@
-import Link from 'next/link';
-import {notFound} from 'next/navigation';
-import {getProjectBySlug} from '@/lib/repository';
-import {projectSummary} from '@/lib/types';
-import type {Locale} from '@/lib/types';
-import {projectPeriod} from '@/lib/i18n';
-export const dynamic='force-dynamic';
-export default async function ProjectDetail({params}:{params:Promise<{lang:string;slug:string}>}){const {lang:raw,slug}=await params;const lang:Locale=raw==='en'?'en':'ko';const {project:p,data:d}=await getProjectBySlug(slug);if(!p)notFound();const related=d.projectTechnologies.filter(r=>r.project_id===p.id).map(r=>({rel:r,tech:d.technologies.find(t=>t.id===r.technology_id)})).filter(x=>x.tech);const metrics=d.projectMetrics.filter(m=>m.project_id===p.id);const assetIds=d.assetLinks.filter(a=>a.entity_type==='project'&&a.entity_id===p.id).map(a=>a.asset_id);const assets=d.mediaAssets.filter(a=>assetIds.includes(a.id));
- return <><section className="case-hero page-top" data-chapter="PROJECT / OPENING"><div className="wrap"><div className="section-eyebrow">PROJECT CASE STUDY / {p.status.toUpperCase()}</div><h1>{lang==='en'&&p.name_en?p.name_en:p.name}</h1><p>{projectSummary(p,lang)}</p><Link href={`/${lang}/projects`}>← {lang==='ko'?'프로젝트 전체 보기':'All Projects'}</Link></div></section><section className="case-paper" data-chapter="PROJECT / ENGINEERING"><div className="wrap"><div className="case-columns"><aside><span>PROJECT FACTS</span><dl><dt>STATUS</dt><dd>{p.status}</dd><dt>TYPE</dt><dd>{p.project_type}</dd><dt>PERIOD</dt><dd>{projectPeriod(p,lang)}</dd>{p.role&&<><dt>ROLE</dt><dd>{lang==='en'&&p.role_en?p.role_en:p.role}</dd></>}</dl></aside><article><h2>{lang==='ko'?'프로젝트 개요':'Overview'}</h2><p>{lang==='ko'?p.description_ko||projectSummary(p,lang):p.description_en||projectSummary(p,lang)}</p>{p.key_contributions&&<><h2>{lang==='ko'?'주요 구현과 기여':'Engineering Contributions'}</h2><p>{lang==='en'&&p.key_contributions_en?p.key_contributions_en:p.key_contributions}</p></>}{p.result_summary&&<><h2>{lang==='ko'?'성과':'Results'}</h2><p>{lang==='en'&&p.result_summary_en?p.result_summary_en:p.result_summary}</p></>}{p.lessons_learned&&<><h2>{lang==='ko'?'회고':'Lessons Learned'}</h2><p>{lang==='en'&&p.lessons_learned_en?p.lessons_learned_en:p.lessons_learned}</p></>}
- <h2>{lang==='ko'?'사용 기술':'Technologies'}</h2>{related.length?<div className="tech-pills">{related.map(x=><span key={x.tech?.id}>{x.tech?.name}</span>)}</div>:<p className="empty-note">{lang==='ko'?'아직 확인된 기술 관계가 없습니다.':'No verified technology links yet.'}</p>}
- {metrics.length>0&&<><h2>{lang==='ko'?'프로젝트 지표':'Project Metrics'}</h2><div className="case-metrics">{metrics.map(m=><div key={m.id}><strong>{m.display_value}</strong><span>{m.metric_name}{!m.is_verified?' *':''}</span></div>)}</div><p className="empty-note">* {lang==='ko'?'원본 기록의 수치이며 독립적으로 검증된 지표라는 뜻은 아닙니다.':'Reported values are not necessarily independently verified.'}</p></>}
- <h2>{lang==='ko'?'미디어·증빙':'Media & Evidence'}</h2>{assets.length?assets.map(a=><div key={String(a.id)} className="asset-row"><a href={String(a.external_url||'#')} target="_blank" rel="noopener noreferrer">{String(a.file_name)} ↗</a></div>):<p className="empty-note">{lang==='ko'?'아직 등록된 공개 자료가 없습니다.':'No public supporting assets uploaded yet.'}</p>}
- <div className="case-links">{p.live_url&&<a href={p.live_url} target="_blank" rel="noopener noreferrer">LIVE ↗</a>}{p.store_url&&<a href={p.store_url} target="_blank" rel="noopener noreferrer">STORE ↗</a>}{p.github_url&&p.source_code_visibility==='public'&&<a href={p.github_url} target="_blank" rel="noopener noreferrer">GITHUB ↗</a>}{p.source_code_visibility==='private'&&<span>PRIVATE SOURCE</span>}</div></article></div></div></section></>;
+import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getProjectBySlug } from "@/lib/repository";
+import { projectSummary, projectDescription } from "@/lib/types";
+import type { Locale } from "@/lib/types";
+import { projectPeriod } from "@/lib/i18n";
+import {
+  categoryLabel,
+  projectName,
+  projectTechnologies,
+  statusLabel,
+  textValue,
+} from "@/lib/presentation";
+export const dynamic = "force-dynamic";
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string; slug: string }>;
+}): Promise<Metadata> {
+  const { lang: raw, slug } = await params;
+  const lang: Locale = raw === "en" ? "en" : "ko";
+  const { project } = await getProjectBySlug(slug);
+  if (!project)
+    return {
+      title:
+        lang === "ko" ? "프로젝트를 찾을 수 없습니다" : "Project not found",
+    };
+  const title = projectName(project, lang);
+  const description = projectSummary(project, lang);
+  return {
+    title,
+    description,
+    openGraph: { title, description, type: "website" },
+  };
+}
+export default async function ProjectDetail({
+  params,
+}: {
+  params: Promise<{ lang: string; slug: string }>;
+}) {
+  const { lang: raw, slug } = await params;
+  const lang: Locale = raw === "en" ? "en" : "ko";
+  const ko = lang === "ko";
+  const { project: p, data: d } = await getProjectBySlug(slug);
+  if (!p) notFound();
+  const related = projectTechnologies(d, p.id);
+  const metrics = d.projectMetrics.filter((m) => m.project_id === p.id);
+  const assetIds = new Set(
+    d.assetLinks
+      .filter((a) => String(a.project_id ?? "") === p.id)
+      .map((a) => String(a.asset_id ?? a.media_asset_id)),
+  );
+  const assets = d.mediaAssets.filter((a) => assetIds.has(String(a.id)));
+  const projectIndex = d.projects.findIndex((project) => project.id === p.id);
+  const next = d.projects[projectIndex + 1] || d.projects[0];
+  const description = projectDescription(p, lang);
+  const contributions =
+    lang === "en" && p.key_contributions_en
+      ? p.key_contributions_en
+      : p.key_contributions;
+  const results =
+    lang === "en" && p.result_summary_en
+      ? p.result_summary_en
+      : p.result_summary;
+  const lessons =
+    lang === "en" && p.lessons_learned_en
+      ? p.lessons_learned_en
+      : p.lessons_learned;
+  return (
+    <>
+      <section className="case-hero page-top">
+        <div className="wrap">
+          <Link href={`/${lang}/projects`} className="breadcrumb">
+            ← {ko ? "전체 프로젝트" : "All projects"}
+          </Link>
+          <div className="case-labels">
+            <span>{categoryLabel(p.project_type, lang)}</span>
+            <span>{statusLabel(p.status, lang)}</span>
+            {p.is_featured && <span>{ko ? "대표 프로젝트" : "Featured"}</span>}
+          </div>
+          <h1>{projectName(p, lang)}</h1>
+          {projectSummary(p, lang) && <p>{projectSummary(p, lang)}</p>}
+        </div>
+      </section>
+      <section className="case-paper">
+        <div className="wrap case-columns">
+          <aside>
+            <span>PROJECT INFORMATION</span>
+            <dl>
+              <dt>{ko ? "담당 역할" : "Role"}</dt>
+              <dd>
+                {(lang === "en" && p.role_en ? p.role_en : p.role) ||
+                  (ko ? "아직 등록되지 않았습니다." : "Not recorded yet.")}
+              </dd>
+              <dt>{ko ? "기간" : "Period"}</dt>
+              <dd>{projectPeriod(p, lang)}</dd>
+              <dt>{ko ? "유형" : "Type"}</dt>
+              <dd>{categoryLabel(p.project_type, lang)}</dd>
+              <dt>{ko ? "상태" : "Status"}</dt>
+              <dd>{statusLabel(p.status, lang)}</dd>
+            </dl>
+            <div className="case-links">
+              {p.live_url && (
+                <a href={p.live_url} target="_blank" rel="noopener noreferrer">
+                  {ko ? "서비스 보기" : "Live site"}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              )}
+              {p.store_url && (
+                <a href={p.store_url} target="_blank" rel="noopener noreferrer">
+                  {ko ? "스토어" : "Store"}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              )}
+              {p.github_url && p.source_code_visibility === "public" && (
+                <a
+                  href={p.github_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub<span aria-hidden="true">↗</span>
+                </a>
+              )}
+              {p.source_code_visibility === "private" && (
+                <span>{ko ? "소스 코드 비공개" : "Private source code"}</span>
+              )}
+            </div>
+          </aside>
+          <article className="case-content">
+            <section>
+              <h2>{ko ? "프로젝트 개요" : "Overview"}</h2>
+              {description ? (
+                <p>{description}</p>
+              ) : (
+                <p className="empty-note">
+                  {ko
+                    ? "상세 설명을 준비하고 있습니다."
+                    : "A detailed overview is being prepared."}
+                </p>
+              )}
+              {p.content_markdown && p.content_markdown !== description && (
+                <div className="project-markdown">{p.content_markdown}</div>
+              )}
+            </section>
+            {contributions && (
+              <section>
+                <h2>
+                  {ko ? "주요 구현과 기여" : "Implementation & contributions"}
+                </h2>
+                <p>{contributions}</p>
+              </section>
+            )}
+            {results && (
+              <section>
+                <h2>{ko ? "결과" : "Results"}</h2>
+                <p>{results}</p>
+              </section>
+            )}
+            {related.length > 0 && (
+              <section>
+                <h2>{ko ? "사용 기술" : "Technologies"}</h2>
+                <div className="tech-pills">
+                  {related.map((t) => (
+                    <span key={t.id}>{t.name}</span>
+                  ))}
+                </div>
+              </section>
+            )}
+            {metrics.length > 0 && (
+              <section>
+                <h2>{ko ? "프로젝트 지표" : "Project metrics"}</h2>
+                <div className="case-metrics">
+                  {metrics.map((m) => (
+                    <div key={m.id}>
+                      <strong>{m.display_value}</strong>
+                      <span>
+                        {m.metric_name}
+                        {m.is_verified !== true ? " *" : ""}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                {metrics.some((m) => m.is_verified !== true) && (
+                  <p className="empty-note">
+                    {ko
+                      ? "* 프로젝트 기록 기준 수치입니다."
+                      : "* Values reported in the project records."}
+                  </p>
+                )}
+              </section>
+            )}
+            {lessons && (
+              <section>
+                <h2>{ko ? "배운 점" : "What I learned"}</h2>
+                <p>{lessons}</p>
+              </section>
+            )}
+            {assets.length > 0 && (
+              <section>
+                <h2>{ko ? "관련 자료" : "Supporting materials"}</h2>
+                {assets.map((a) => (
+                  <div key={String(a.id)} className="asset-row">
+                    {textValue(a.external_url) ? (
+                      <a
+                        href={textValue(a.external_url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {textValue(a.file_name) ||
+                          textValue(a.caption) ||
+                          (ko ? "자료 보기" : "View resource")}
+                        <span aria-hidden="true">↗</span>
+                      </a>
+                    ) : (
+                      <span>
+                        {textValue(a.file_name) || textValue(a.caption)}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </section>
+            )}
+            {next && next.id !== p.id && (
+              <div className="case-navigation">
+                <Link href={`/${lang}/projects/${next.slug}`}>
+                  <div>
+                    <small>{ko ? "다음 프로젝트" : "Next project"}</small>
+                    <strong>{projectName(next, lang)}</strong>
+                  </div>
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            )}
+          </article>
+        </div>
+      </section>
+    </>
+  );
 }

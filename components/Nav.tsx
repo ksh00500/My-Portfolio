@@ -1,13 +1,113 @@
-'use client';
-import Link from 'next/link';
-import {usePathname} from 'next/navigation';
-import {useState} from 'react';
-import type {Locale} from '@/lib/types';
-import {langData} from '@/lib/i18n';
-export function Nav({lang,name}:{lang:Locale;name:string}){
- const [open,setOpen]=useState(false); const path=usePathname();const text=langData[lang];
- const other:Locale=lang==='ko'?'en':'ko';
- const toOther=path.replace(/^\/(ko|en)(?=\/|$)/,`/${other}`);
- const items=[{key:'projects',href:`/${lang}/projects`,label:text.projects},{key:'experience',href:`/${lang}/experience`,label:text.experience},{key:'recognition',href:`/${lang}/recognition`,label:text.recognition}];
- return <header className="site-nav"><div className="nav-primary"><Link className="brand" href={`/${lang}`}>{name}</Link><nav className={open?'nav-items open':'nav-items'} aria-label="Main navigation">{items.map(item=><Link key={item.key} href={item.href} onClick={()=>setOpen(false)}>{item.label}</Link>)}<Link href={`/${lang}#tech`} onClick={()=>setOpen(false)}>{text.tech}</Link></nav><div className="nav-right"><Link href={toOther} className="language-switch" aria-label={lang==='ko'?'Switch to English':'한국어로 전환'}><span className={lang==='ko'?'current':''}>KR</span><span className="divider">/</span><span className={lang==='en'?'current':''}>EN</span></Link><button className="menu-toggle" onClick={()=>setOpen(!open)} aria-label={open?text.close:'Menu'}>{open?'×':'☰'}</button></div></div><div className="nav-sub"><span className="indicator"/><span>AN INTERACTIVE PORTFOLIO</span><span className="nav-track"/></div></header>
+"use client";
+import Link from "next/link";
+import { ArrowRight } from "@/components/ArrowRight";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import type { Locale } from "@/lib/types";
+
+export function Nav({ lang, name }: { lang: Locale; name: string }) {
+  const [open, setOpen] = useState(false);
+  const path = usePathname();
+  const toggle = useRef<HTMLButtonElement>(null);
+  const nav = useRef<HTMLElement>(null);
+  const other = lang === "ko" ? "en" : "ko";
+  const ko = lang === "ko";
+  const toOther = path.replace(/^\/(ko|en)(?=\/|$)/, `/${other}`);
+  useEffect(() => {
+    if (!open) return;
+    const key = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggle.current?.focus();
+      }
+    };
+    const outside = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !nav.current?.contains(event.target) &&
+        !toggle.current?.contains(event.target)
+      )
+        setOpen(false);
+    };
+    document.addEventListener("keydown", key);
+    document.addEventListener("pointerdown", outside);
+    return () => {
+      document.removeEventListener("keydown", key);
+      document.removeEventListener("pointerdown", outside);
+    };
+  }, [open]);
+  const items = [
+    { href: `/${lang}/projects`, label: ko ? "프로젝트" : "Projects" },
+    { href: `/${lang}/experience`, label: ko ? "경력 · 활동" : "Experience" },
+    { href: `/${lang}/recognition`, label: ko ? "수상 · 자격" : "Awards" },
+    { href: `/${lang}#tech`, label: ko ? "기술" : "Skills" },
+  ];
+  return (
+    <header className="site-nav">
+      <div className="wrap nav-primary">
+        <Link
+          className="brand"
+          href={`/${lang}`}
+          onClick={() => setOpen(false)}
+        >
+          <span>{name}</span>
+        </Link>
+        <nav
+          id="main-navigation"
+          ref={nav}
+          className={open ? "nav-items open" : "nav-items"}
+          aria-label={ko ? "주 메뉴" : "Main navigation"}
+        >
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              aria-current={path === item.href ? "page" : undefined}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+        <div className="nav-right">
+          <Link
+            href={toOther}
+            className="language-switch"
+            hrefLang={other}
+            lang={other}
+            aria-label={ko ? "Switch to English" : "한국어로 전환"}
+          >
+            {other === "en" ? "EN" : "KO"}
+          </Link>
+          <Link
+            href={`/${lang}#contact`}
+            className="nav-contact"
+            onClick={() => setOpen(false)}
+          >
+            {ko ? "연락하기" : "Contact"}
+            <ArrowRight />
+          </Link>
+          <button
+            ref={toggle}
+            className="menu-toggle"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={
+              open
+                ? ko
+                  ? "메뉴 닫기"
+                  : "Close menu"
+                : ko
+                  ? "메뉴 열기"
+                  : "Open menu"
+            }
+            aria-expanded={open}
+            aria-controls="main-navigation"
+          >
+            <span />
+            <span />
+          </button>
+        </div>
+      </div>
+    </header>
+  );
 }
