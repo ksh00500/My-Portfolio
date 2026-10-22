@@ -62,8 +62,7 @@ await test('/api/projects/senro',async()=>{const data=await (await http('/api/pr
 for(const path of names)await test(path+' rendered',async()=>{
  const html=await (await http(path)).text();assert.ok(html.includes('<html'),'missing HTML document');assert.ok(!html.includes('Database unavailable'),'DB exception on page');
  if(path.includes('senro'))assert.match(html,/SENRO/i);
- if(path==='/ko'&&payload){const hero=payload.content?.['hero.title']?.ko; if(hero)assert.ok(html.includes(hero),'hero copy missing');}
- if(path==='/en'&&payload){const hero=payload.content?.['hero.title']?.en; if(hero)assert.ok(html.includes('Merchant'),'English hero copy missing');}
+ if((path==='/ko'||path==='/en')&&payload){const language=path.slice(1);const hero=payload.content?.['hero.title']?.[language];if(hero)for(const line of hero.split('\n'))assert.ok(html.includes(line),'hero copy missing');}
 });
 if(process.env.ADMIN_TEST_COOKIE){
  for(const path of ['/api/admin/resources','/api/admin/schema','/api/admin/projects','/api/admin/technologies','/api/admin/asset_links']){
