@@ -1,4 +1,4 @@
-/** Regression checks for retiring the previous copy without changing DB rows. */
+/** Keep the requested identity, retire the philosophy copy, and preserve DB rows. */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import ts from "typescript";
@@ -31,7 +31,18 @@ const old = [
 ];
 const snapshot = structuredClone(old);
 const clean = resolveSiteContent(old);
-assert.deepEqual(clean["hero.title"], defaultSiteContent["hero.title"]);
+assert.equal(defaultSiteContent["hero.title"].ko, "셈을 못하는 상인");
+assert.deepEqual(
+  clean["hero.title"],
+  { ko: old[0].ko, en: old[0].en },
+  "the requested brand name must survive content resolution",
+);
+assert.equal(
+  resolveSiteContent([
+    { key: "hero.title", ko: null, en: "A Merchant Who Can’t Count" },
+  ])["hero.title"].en,
+  "A Merchant Who Can’t Count",
+);
 assert.deepEqual(clean["hero.subtitle"], defaultSiteContent["hero.subtitle"]);
 assert.ok(!Object.hasOwn(clean, "ending.tagline"));
 assert.deepEqual(
@@ -52,5 +63,5 @@ assert.deepEqual(
   "one request must not mutate the shared defaults",
 );
 console.log(
-  "Content regression checks passed: retired copy, custom copy, locale fallbacks, immutable defaults.",
+  "Content regression checks passed: restored identity, retired philosophy, custom copy, locale fallbacks, immutable defaults.",
 );

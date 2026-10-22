@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { ArrowRight } from "@/components/ArrowRight";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/types";
@@ -77,7 +78,6 @@ export function Nav({ lang, name }: { lang: Locale; name: string }) {
             aria-label={ko ? "Switch to English" : "한국어로 전환"}
           >
             {other === "en" ? "EN" : "KO"}
-            <span aria-hidden="true">↗</span>
           </Link>
           <Link
             href={`/${lang}#contact`}
@@ -85,7 +85,7 @@ export function Nav({ lang, name }: { lang: Locale; name: string }) {
             onClick={() => setOpen(false)}
           >
             {ko ? "연락하기" : "Contact"}
-            <span aria-hidden="true">↗</span>
+            <ArrowRight />
           </Link>
           <button
             ref={toggle}

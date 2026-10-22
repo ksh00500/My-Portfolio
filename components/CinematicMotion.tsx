@@ -9,7 +9,7 @@ interface Scene {
   color: string;
 }
 
-/** Native page scrolling, with a small, accessible scene index. No scroll interception. */
+/** Native page scrolling, with a labeled, accessible scene index. No scroll interception. */
 export function CinematicMotion() {
   const path = usePathname();
   const progress = useRef<HTMLDivElement>(null);
@@ -120,6 +120,9 @@ export function CinematicMotion() {
           className="scene-index"
           aria-label={path.startsWith("/en") ? "Page sections" : "페이지 섹션"}
         >
+          <span className="scene-index-title" aria-hidden="true">
+            CHAPTERS
+          </span>
           {scenes.map((scene, index) => (
             <a
               key={scene.id}
@@ -130,7 +133,7 @@ export function CinematicMotion() {
                 {String(index + 1).padStart(2, "0")}
               </span>
               <span className="scene-label">{scene.label}</span>
-              <i style={{ background: scene.color }} />
+              <i style={{ background: scene.color }} aria-hidden="true" />
             </a>
           ))}
         </nav>
