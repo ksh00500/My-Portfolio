@@ -1,3 +1,80 @@
-import {getPortfolioData} from '@/lib/repository';import type {Locale} from '@/lib/types';
-export const dynamic='force-dynamic';
-export default async function RecognitionArchive({params}:{params:Promise<{lang:string}>}){const {lang:raw}=await params;const lang:Locale=raw==='en'?'en':'ko';const d=await getPortfolioData();return <section className="recognition-archive page-top" data-chapter="ARCHIVE / RECOGNITION"><div className="wrap"><div className="section-eyebrow amber">THE HONORS / COMPLETE ARCHIVE</div><h1 className="archive-heading">{lang==='ko'?'수상과 인증의 기록':'Honors & Credentials'}</h1><div className="recognition-list">{d.recognitions.map(r=><div className="recognition-item" key={r.id}><span>{r.awarded_at?.slice(0,10)||'—'}</span><div><h2>{lang==='en'&&r.title_en?r.title_en:r.title}</h2><p>{lang==='en'&&r.award_name_en?r.award_name_en:r.award_name}</p></div><strong>{r.recognition_type}</strong></div>)}</div><h2 className="subsection-heading">{lang==='ko'?'취득 자격증':'Certifications'}</h2><div className="recognition-list">{d.certifications.map(c=><div className="recognition-item" key={String(c.id)}><span>{String(c.issued_at||'—').slice(0,10)}</span><div><h2>{String(c.name)}</h2><p>{String(c.issuer||'')}</p></div><strong>{String(c.status||'')}</strong></div>)}</div></div></section>}
+import Link from "next/link";
+import { getPortfolioData } from "@/lib/repository";
+import type { Locale } from "@/lib/types";
+import { categoryLabel, textValue } from "@/lib/presentation";
+export const dynamic = "force-dynamic";
+export default async function RecognitionArchive({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang: raw } = await params;
+  const lang: Locale = raw === "en" ? "en" : "ko";
+  const ko = lang === "ko";
+  const d = await getPortfolioData();
+  return (
+    <section className="page-top">
+      <div className="wrap">
+        <Link href={`/${lang}`} className="breadcrumb">
+          ← {ko ? "홈" : "Home"}
+        </Link>
+        <span className="eyebrow">AWARDS & CREDENTIALS</span>
+        <h1 className="archive-heading">
+          {ko ? "수상 및 자격" : "Awards & credentials"}
+        </h1>
+        <p className="archive-intro">
+          {ko
+            ? "대회 수상, 장학 이력과 취득한 자격을 모았습니다."
+            : "Competition awards, scholarships, and acquired credentials."}
+        </p>
+        {d.recognitions.length > 0 ? (
+          <div className="recognition-list">
+            {[...d.recognitions]
+              .sort((a, b) =>
+                (b.awarded_at || "").localeCompare(a.awarded_at || ""),
+              )
+              .map((r) => (
+                <div className="recognition-item" key={r.id}>
+                  <span>{r.awarded_at?.slice(0, 10) || "—"}</span>
+                  <div>
+                    <h2>
+                      {lang === "en" && r.title_en ? r.title_en : r.title}
+                    </h2>
+                    <p>
+                      {lang === "en" && r.award_name_en
+                        ? r.award_name_en
+                        : r.award_name}
+                    </p>
+                  </div>
+                  <strong>{categoryLabel(r.recognition_type, lang)}</strong>
+                </div>
+              ))}
+          </div>
+        ) : (
+          <p className="empty-note">
+            {ko ? "공개된 수상 이력이 없습니다." : "No public awards yet."}
+          </p>
+        )}
+        {d.certifications.length > 0 && (
+          <>
+            <h2 className="subsection-heading">
+              {ko ? "자격증" : "Certifications"}
+            </h2>
+            <div className="recognition-list">
+              {d.certifications.map((c) => (
+                <div className="recognition-item" key={String(c.id)}>
+                  <span>{textValue(c.issued_at).slice(0, 10) || "—"}</span>
+                  <div>
+                    <h2>{textValue(c.name)}</h2>
+                    <p>{textValue(c.issuer)}</p>
+                  </div>
+                  <strong>{ko ? "취득" : "Acquired"}</strong>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}

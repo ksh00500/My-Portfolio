@@ -1,27 +1,368 @@
-import Link from 'next/link';
-import {getPortfolioData} from '@/lib/repository';
-import {Hero} from '@/components/Hero';
-import {TechAtlas} from '@/components/TechAtlas';
-import {langData} from '@/lib/i18n';
-import {translate,projectSummary} from '@/lib/types';
-import type {Locale} from '@/lib/types';
-export const dynamic='force-dynamic';
-export default async function Home({params}:{params:Promise<{lang:string}>}){
- const {lang:raw}=await params;const lang:Locale=raw==='en'?'en':'ko';
- const d=await getPortfolioData();const t=langData[lang];const c=(key:string,fallback='')=>translate(d.content,key,lang,fallback);
- const profileName=lang==='ko'?String(d.profile?.name_ko||''):String(d.profile?.name_en||'');
- const featured=d.projects.find(p=>p.is_featured)||d.projects[0];
- const other=d.projects.filter(p=>p.id!==featured?.id).slice(0,4);
- const awards=d.recognitions.filter(r=>r.recognition_type==='award').slice(0,3);
- const recent=d.experiences.filter(e=>e.category!=='Certification & Badge').slice(0,5);
- return <>
-  <Hero lang={lang} title={c('hero.title')} subtitle={c('hero.subtitle')} name={profileName}/>
-  <section id="about" className="about-block" data-chapter="CHAPTER 02 / ABOUT"><div className="wrap"><div className="section-eyebrow">02 / THE PERSON</div><div className="about-columns"><div className="about-statement"><span className="opening-quote">“</span><h2>{c('about.title')}</h2><p>{c('about.description')}</p></div><div className="about-facts"><span>PROFILE / {new Date().getFullYear()}</span><h3>{profileName}</h3><dl><dt>ROLE</dt><dd>{String(d.profile?.headline||'')}</dd><dt>EDUCATION</dt><dd>{String(d.profile?.school_name||'')} · {String(d.profile?.department||'')}</dd><dt>PRODUCT</dt><dd>{featured?.name||'—'}</dd></dl></div></div></div></section>
-  {featured&&<section className="feature-block" id="featured" data-chapter="CHAPTER 03 / DIRECTOR'S CUT"><div className="wrap"><div className="section-eyebrow">03 / FEATURED PROJECT — DIRECTOR&apos;S CUT</div><div className="feature-masthead"><h2>{featured.name}</h2><p>{c('senro.title')}</p></div><div className="acts-filmstrip">{[1,2,3].map((n)=><div className="act-panel" key={n}><small>ACT 0{n}</small><div className="act-rings"/><strong>{c(`senro.act${n}`)}</strong></div>)}</div><div className="feature-details"><p>{projectSummary(featured,lang)}</p><div className="feature-metrics">{d.projectMetrics.filter(m=>m.project_id===featured.id).map(m=><div key={m.id}><strong>{m.display_value}</strong><small>{m.metric_name}{!m.is_verified?' *':''}</small></div>)}</div><Link href={`/${lang}/projects/${featured.slug}`} className="dark-outline-link">{t.view} ↗</Link></div><p className="provenance-note">{lang==='ko'?'* 초기 기록에 근거한 지표이며 별도 검증 여부는 DB에 보관됩니다.':'* Initial reported metrics; verification state is stored separately.'}</p></div></section>}
-  <section className="projects-block" id="work" data-chapter="CHAPTER 04 / SELECTED WORKS"><div className="wrap"><div className="section-eyebrow ink">04 / PROJECT COLLECTION</div><div className="section-title-row"><h2>{c('projects.title')}</h2><p>{c('projects.description')}</p></div><div className="project-grid">{other.map((p,i)=><Link href={`/${lang}/projects/${p.slug}`} className={`project-tile project-tile-${i%4}`} key={p.id}><small>{String(i+1).padStart(2,'0')} / {String(p.project_type||'PROJECT').toUpperCase()}</small><h3>{p.name}</h3><span>{p.status}　↗</span></Link>)}</div><div className="project-list-mini">{d.projects.filter(p=>p.id!==featured?.id).slice(4,9).map(p=><Link href={`/${lang}/projects/${p.slug}`} key={p.id}>{p.name}<span>{p.status}　↗</span></Link>)}</div><Link href={`/${lang}/projects`} className="ink-link">{t.archive} ↗</Link></div></section>
-  <section className="tech-block" id="tech" data-chapter="CHAPTER 05 / ENGINEERING"><div className="wrap"><div className="section-eyebrow steel">05 / TECHNICAL DISTRIBUTION</div><h2>{c('tech.title')}</h2><p className="section-descrip">{c('tech.description')}</p><TechAtlas techs={d.technologies} relations={d.projectTechnologies} projects={d.projects} lang={lang}/></div></section>
-  <section className="honors-block" id="honors" data-chapter="CHAPTER 06 / RECOGNITION"><div className="wrap"><div className="section-eyebrow amber">06 / FILM FESTIVAL LAURELS</div><h2>{c('recognition.title')}</h2><div className="laurel-showcase">{awards.map((a,i)=><div className={`laurel-spot laurel-${i}`} key={a.id}><span className="laurel-glyph">❧</span><small>{a.title}</small><strong>{lang==='en'&&a.award_name_en?a.award_name_en:a.award_name}</strong><span>{a.awarded_at?.slice(0,4)||'—'}</span></div>)}</div><Link className="bronze-link" href={`/${lang}/recognition`}>{t.archive} ↗</Link></div></section>
-  <section className="experience-block" id="experience" data-chapter="CHAPTER 07 / THE JOURNEY"><div className="wrap"><div className="section-eyebrow slate">07 / SELECTED MILESTONES</div><h2>{c('experience.title')}</h2><div className="timeline">{recent.map(e=><div className="timeline-entry" key={e.id}><time>{e.started_at?.slice(0,4)||'—'}</time><div><h3>{lang==='en'&&e.name_en?e.name_en:e.name}</h3><span>{e.category}{e.role?' · '+e.role:''}</span></div></div>)}</div><Link className="slate-link" href={`/${lang}/experience`}>{t.archive} ↗</Link></div></section>
-  <footer className="closing-block" id="contact" data-chapter="FINAL CHAPTER / CREDITS"><div className="wrap"><span className="section-eyebrow">THE END / CREDITS</span><h2>{c('ending.title')}</h2><div className="credits-line"/><div className="credits-table"><span>DEVELOPMENT</span><strong>{profileName}</strong><span>PHILOSOPHY</span><strong>{c('hero.title')}</strong><span>CONTACT</span><strong>{d.profile?.email?String(d.profile.email):'GitHub'}</strong></div><div className="closing-links">{typeof d.profile?.github_url==='string' && d.profile.github_url.trim()!=='' && <a href={d.profile.github_url} target="_blank" rel="noopener noreferrer">GitHub ↗</a>}{typeof d.profile?.email==='string' && d.profile.email.trim()!=='' && <a href={`mailto:${d.profile.email}`}>Email ↗</a>}{typeof d.profile?.keyda_url==='string' && d.profile.keyda_url.trim()!=='' && <a href={d.profile.keyda_url} target="_blank" rel="noopener noreferrer">KeyDa ↗</a>}</div><span className="the-end">{c('ending.tagline')}</span></div></footer>
- </>;
+import Link from "next/link";
+import { getPortfolioData } from "@/lib/repository";
+import { Hero } from "@/components/Hero";
+import { ProjectCard } from "@/components/ProjectCard";
+import { Skills } from "@/components/Skills";
+import { CopyEmail, PrintResume } from "@/components/Contact";
+import { TechAtlas } from "@/components/TechAtlas";
+import { projectPeriod } from "@/lib/i18n";
+import { projectSummary, translate } from "@/lib/types";
+import type { Locale } from "@/lib/types";
+import {
+  projectName,
+  projectTechnologies,
+  selectedProjects,
+  statusLabel,
+  textValue,
+} from "@/lib/presentation";
+export const dynamic = "force-dynamic";
+
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang: raw } = await params;
+  const lang: Locale = raw === "en" ? "en" : "ko";
+  const ko = lang === "ko";
+  const d = await getPortfolioData();
+  const c = (key: string) => translate(d.content, key, lang);
+  const name =
+    textValue(d.profile?.[ko ? "name_ko" : "name_en"]) ||
+    (ko ? "김시호" : "KIM SIHO");
+  const school = [
+    textValue(d.profile?.school_name),
+    textValue(d.profile?.department),
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const { featured, selected } = selectedProjects(d.projects);
+  const email = c("contact.email") || textValue(d.profile?.email);
+  const github = textValue(d.profile?.github_url);
+  const featuredTech = featured ? projectTechnologies(d, featured.id) : [];
+  const awards = d.recognitions
+    .filter((r) => r.recognition_type === "award")
+    .sort((a, b) => (b.awarded_at || "").localeCompare(a.awarded_at || ""))
+    .slice(0, 3);
+  const employment = [...d.employment].sort((a, b) =>
+    textValue(b.started_at).localeCompare(textValue(a.started_at)),
+  );
+  const education = [...d.education].sort((a, b) =>
+    textValue(b.started_at).localeCompare(textValue(a.started_at)),
+  );
+  return (
+    <>
+      <Hero
+        lang={lang}
+        title={c("hero.title")}
+        subtitle={c("hero.subtitle")}
+        name={name}
+        featured={featured}
+        school={school}
+      />
+      <section
+        className="section projects-section"
+        id="projects"
+        aria-labelledby="projects-title"
+      >
+        <div className="wrap">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">01 / SELECTED WORK</span>
+              <h2 id="projects-title">{c("projects.title")}</h2>
+            </div>
+            <Link className="text-link" href={`/${lang}/projects`}>
+              {ko ? "전체 프로젝트" : "All projects"}
+              <span className="count">{d.projects.length}</span>
+              <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+          {featured && (
+            <article className="featured-project">
+              <div className="featured-copy">
+                <div className="featured-label">
+                  <span>{ko ? "대표 프로젝트" : "Featured project"}</span>
+                  <span className="project-state">
+                    <i />
+                    {statusLabel(featured.status, lang)}
+                  </span>
+                </div>
+                <h3>
+                  <Link href={`/${lang}/projects/${featured.slug}`}>
+                    {projectName(featured, lang)}
+                  </Link>
+                </h3>
+                <p className="featured-summary">
+                  {projectSummary(featured, lang)}
+                </p>
+                <dl className="project-facts">
+                  {featured.role && (
+                    <>
+                      <dt>{ko ? "담당 역할" : "Role"}</dt>
+                      <dd>
+                        {lang === "en" && featured.role_en
+                          ? featured.role_en
+                          : featured.role}
+                      </dd>
+                    </>
+                  )}
+                  <dt>{ko ? "개발 기간" : "Period"}</dt>
+                  <dd>{projectPeriod(featured, lang)}</dd>
+                  {featuredTech.length > 0 && (
+                    <>
+                      <dt>{ko ? "사용 기술" : "Stack"}</dt>
+                      <dd>{featuredTech.map((t) => t.name).join(" / ")}</dd>
+                    </>
+                  )}
+                </dl>
+                <Link
+                  href={`/${lang}/projects/${featured.slug}`}
+                  className="button light"
+                >
+                  {ko ? "프로젝트 자세히 보기" : "Read the case study"}
+                  <span aria-hidden="true">↗</span>
+                </Link>
+              </div>
+              <Link
+                href={`/${lang}/projects/${featured.slug}`}
+                className="featured-visual"
+                aria-label={`${projectName(featured, lang)} ${ko ? "상세 보기" : "details"}`}
+              >
+                <div className="feature-grid" />
+                <span className="visual-label">
+                  PROJECT / {featured.started_at?.slice(0, 4) || "WEB"}
+                </span>
+                <div className="feature-orbit" aria-hidden="true">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <strong>{projectName(featured, lang)}</strong>
+                <span className="visual-caption">
+                  {ko ? "프로젝트 상세 보기" : "Explore the project"}
+                  <span aria-hidden="true">↗</span>
+                </span>
+              </Link>
+            </article>
+          )}
+          <div className="project-grid">
+            {selected.map((p, i) => (
+              <ProjectCard
+                key={p.id}
+                project={p}
+                techs={projectTechnologies(d, p.id)}
+                lang={lang}
+                index={i}
+              />
+            ))}
+          </div>
+          {d.projects.length === 0 && (
+            <p className="empty-note">
+              {ko
+                ? "아직 공개된 프로젝트가 없습니다."
+                : "No public projects yet."}
+            </p>
+          )}
+        </div>
+      </section>
+      <section
+        className="section about-section"
+        id="about"
+        aria-labelledby="about-title"
+      >
+        <div className="wrap about-grid">
+          <div className="about-intro">
+            <span className="eyebrow">02 / ABOUT</span>
+            <h2 id="about-title">{c("about.title")}</h2>
+            <p>{c("about.description")}</p>
+            <div className="about-links">
+              {github && (
+                <a
+                  href={github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-link"
+                >
+                  GitHub<span aria-hidden="true">↗</span>
+                </a>
+              )}
+              <PrintResume lang={lang} />
+            </div>
+          </div>
+          <div className="career-summary">
+            <div className="subheading">
+              <h3>{c("experience.title")}</h3>
+              <Link href={`/${lang}/experience`}>
+                {ko ? "전체 보기" : "View all"}
+                <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
+            {employment.map((e) => (
+              <div className="career-row" key={textValue(e.id)}>
+                <span className="career-type">{ko ? "경력" : "Work"}</span>
+                <h4>{textValue(e.company_name)}</h4>
+                <p>{textValue(e.position)}</p>
+                {textValue(
+                  e[ko ? "description_ko" : "description_en"] || e.description,
+                ) && (
+                  <p className="career-description">
+                    {textValue(
+                      e[ko ? "description_ko" : "description_en"] ||
+                        e.description,
+                    )}
+                  </p>
+                )}
+                <time>
+                  {textValue(e.started_at).slice(0, 7)} —{" "}
+                  {textValue(e.ended_at).slice(0, 7) ||
+                    (ko ? "현재" : "Present")}
+                </time>
+              </div>
+            ))}
+            {education.map((e) => (
+              <div className="career-row" key={textValue(e.id)}>
+                <span className="career-type">{ko ? "교육" : "Education"}</span>
+                <h4>{textValue(e.school_name)}</h4>
+                <p>
+                  {textValue(e.department)}
+                  <span className="inline-separator">/</span>
+                  {statusLabel(textValue(e.status), lang)}
+                </p>
+                <time>
+                  {textValue(e.started_at).slice(0, 7)} —{" "}
+                  {textValue(e.ended_at).slice(0, 7) ||
+                    (ko ? "현재" : "Present")}
+                </time>
+              </div>
+            ))}
+            {!employment.length && !education.length && (
+              <p className="empty-note">
+                {ko
+                  ? "경력과 교육 정보가 아직 등록되지 않았습니다."
+                  : "No experience or education records yet."}
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+      <section
+        className="section tech-section"
+        id="tech"
+        aria-labelledby="skills-title"
+      >
+        <div className="wrap">
+          <div className="section-heading">
+            <div>
+              <span className="eyebrow">03 / TECHNICAL SKILLS</span>
+              <h2 id="skills-title">{c("tech.title")}</h2>
+            </div>
+            <p>{c("tech.description")}</p>
+          </div>
+          <Skills
+            techs={d.technologies}
+            relations={d.projectTechnologies}
+            projects={d.projects}
+            lang={lang}
+          />
+          {d.technologies.length > 0 && (
+            <details className="atlas-disclosure">
+              <summary>
+                {ko
+                  ? "기술과 프로젝트의 관계도 보기"
+                  : "Explore the technology relationship map"}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <TechAtlas
+                techs={d.technologies}
+                relations={d.projectTechnologies}
+                projects={d.projects}
+                lang={lang}
+              />
+            </details>
+          )}
+        </div>
+      </section>
+      {(awards.length > 0 || d.certifications.length > 0) && (
+        <section
+          className="section awards-section"
+          id="recognition"
+          aria-labelledby="awards-title"
+        >
+          <div className="wrap">
+            <div className="section-heading">
+              <div>
+                <span className="eyebrow">04 / RECOGNITION</span>
+                <h2 id="awards-title">{c("recognition.title")}</h2>
+              </div>
+              <Link href={`/${lang}/recognition`} className="text-link">
+                {ko ? "전체 보기" : "View all"}
+                <span aria-hidden="true">↗</span>
+              </Link>
+            </div>
+            <div className="award-list">
+              {awards.map((a) => (
+                <div className="award-row" key={a.id}>
+                  <span className="award-icon" aria-hidden="true">
+                    ✳
+                  </span>
+                  <div>
+                    <h3>
+                      {lang === "en" && a.title_en ? a.title_en : a.title}
+                    </h3>
+                    <p>
+                      {lang === "en" && a.award_name_en
+                        ? a.award_name_en
+                        : a.award_name}
+                    </p>
+                  </div>
+                  <time>{a.awarded_at?.slice(0, 7) || "—"}</time>
+                </div>
+              ))}
+              {d.certifications.map((cert) => (
+                <div className="award-row" key={textValue(cert.id)}>
+                  <span className="award-icon" aria-hidden="true">
+                    ↗
+                  </span>
+                  <div>
+                    <h3>{textValue(cert.name)}</h3>
+                    <p>{textValue(cert.issuer)}</p>
+                  </div>
+                  <time>{textValue(cert.issued_at).slice(0, 7) || "—"}</time>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+      <footer className="contact-section" id="contact">
+        <div className="wrap">
+          <span className="eyebrow">CONTACT</span>
+          <div className="contact-heading">
+            <h2>{c("ending.title")}</h2>
+            <span className="contact-arrow" aria-hidden="true">
+              ↗
+            </span>
+          </div>
+          <div className="contact-line">
+            <a className="email-link" href={`mailto:${email}`}>
+              {email}
+            </a>
+            <CopyEmail email={email} lang={lang} />
+          </div>
+          <div className="footer-bottom">
+            <span>
+              © {new Date().getFullYear()} {name}
+            </span>
+            <span>Full-stack developer</span>
+            {github && (
+              <a href={github} target="_blank" rel="noopener noreferrer">
+                GitHub ↗
+              </a>
+            )}
+            <a href="#intro-title">{ko ? "맨 위로" : "Back to top"} ↑</a>
+          </div>
+        </div>
+      </footer>
+    </>
+  );
 }

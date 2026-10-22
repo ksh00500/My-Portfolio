@@ -1,6 +1,31 @@
 # KIM SIHO Portfolio — PostgreSQL 17 existing-DB refactor
 
-Next.js 16 + React 19 + TypeScript frontend, server APIs, database-driven content and administrator CRUD. Original cinematic visuals, organic technology distribution network, bilingual `/ko` / `/en`, projects, achievements and timeline retained.
+Next.js 16 + React 19 + TypeScript, PostgreSQL-backed public pages and administrator CRUD. The portfolio now focuses on full-stack internship/job applications: selected projects, role and implementation details, work and education, skills, awards, and contact. Korean/English routes and existing DB compatibility are retained.
+
+## Local design preview (no Docker or production database)
+
+```bash
+npm ci
+npm run preview
+```
+
+Open `http://127.0.0.1:3100/ko` or `/en`. This **explicit preview command** creates a disposable, in-memory PGlite database on loopback port `55439`, using the historical repository JSON as a fixture. It ignores the existing `DATABASE_URL`, generates temporary administrator secrets, does not persist data, and displays a preview notice. The fixture demonstrates the application; it is not a copy of the live PostgreSQL 17 schema or its current contents. Close with Ctrl+C. `PREVIEW_PORT` can override the web port.
+
+For a production-build preview, run `npm run build` followed by `npm run preview:production`. This runs the standalone server with the same temporary fixture. These preview commands are never called by Docker, `npm start`, or production startup.
+
+## Presentation and content
+
+- Self-hosted Pretendard variable font, with its OFL license under `public/fonts/`; no external font CSS requests.
+- Light neutral surfaces, dark green project feature, consistent spacing, responsive navigation, visible keyboard focus, and reduced-motion support.
+- Project search by name/description/role, translated status labels, clear filters, and missing-date handling.
+- Skills can be filtered by recorded proficiency and selected to inspect actual project links. The optional relationship map remains available.
+- Confirmed participation only in the public experience page. Unconfirmed program records remain in the database and administrator; they are not presented as achievements.
+- Email is configured through `contact.email` in `lib/site-content.ts`. The user-provided default is `ksh.05.ow@gmail.com`.
+- The PDF button opens the browser print dialog. Print styles remove navigation and decorative covers. It does not claim that a separate PDF has already been generated.
+- `resolveSiteContent()` replaces exact retired template phrases at read time while preserving custom text and database rows. No migration or seed runs as part of this change.
+- Missing contributions and results are not invented. Populate project roles, technical decisions, outcomes, and supporting materials using actual records.
+
+Design changes were made on top of PR #3's compatibility branch, baseline `68ad7b11348ed915b68ec1363545a4a9bbfdab3a`, rather than the older `main`.
 
 > **Preservation rules:** Existing `portfolio-postgres` (PostgreSQL 17), `portfolio` database, 19 projects and 27 technologies are never reset. This version does **not** create any Postgres service, run schema.sql, bootstrap, seed or migration during deployment.
 
@@ -52,7 +77,7 @@ Existing Cloudflare Tunnel service URL: **`http://127.0.0.1:3001`**, since `keyd
 
 Public pages use `is_public = true`, and project source links are exposed only when `source_code_visibility='public'`. Relations use exactly the columns `project_id`, `technology_id`, `usage_note`, `is_primary` — no unverified `confirmed` markers or made-up weights. Circle size is computed from project link counts.
 
-The admin uses server-side entity allowlists with writable columns discovered from live `information_schema.columns` (generated, system and sensitive fields excluded) and validates required columns based on the live schema. PostgreSQL applies FK, unique, enum and CHECK constraints. For an unavailable `site_content` table, the administrator hides that resource, and the public site uses original Korean/English copy stored in `lib/site-content.ts` (does not insert any row).
+The admin uses server-side entity allowlists with writable columns discovered from live `information_schema.columns` (generated, system and sensitive fields excluded) and validates required columns based on the live schema. PostgreSQL applies FK, unique, enum and CHECK constraints. If `site_content` is unavailable, the administrator hides that resource and the public site uses Korean/English defaults in `lib/site-content.ts` without inserting rows.
 
 ### Security
 
@@ -66,6 +91,7 @@ The admin uses server-side entity allowlists with writable columns discovered fr
 
 ```bash
 npm run check:static      # source schema contract / dangerous compose pattern / source baseline
+npm run check:content     # retired copy, custom copy, locale fallback regression checks
 npm run data:check        # checks historical imported JSON, not the production database
 npm run typecheck         # TypeScript check (requires installed packages)
 npm run build             # Next.js production build (requires installed packages)
