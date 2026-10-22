@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Locale, Project } from "@/lib/types";
-import { projectName, statusLabel } from "@/lib/presentation";
+import { projectName } from "@/lib/presentation";
 
 export function Hero({
   lang,
@@ -20,70 +20,69 @@ export function Hero({
   const ko = lang === "ko";
   return (
     <section
-      className="hero"
+      className="hero opening-scene"
       aria-labelledby="intro-title"
       data-chapter="01 / INTRO"
+      data-scene-color="#a9dfc8"
+      data-scene-label={ko ? "소개" : "Intro"}
     >
-      <div className="hero-beam" aria-hidden="true" />
-      <div className="hero-frame" aria-hidden="true">
-        <span>01 — PORTFOLIO</span>
-        <span>FULL-STACK DEVELOPMENT</span>
+      <div className="opening-light" aria-hidden="true">
+        <div className="light-plane" />
+        <div className="light-rim" />
+        <div className="light-horizon" />
+        <span className="light-point" />
       </div>
-      <div className="wrap">
-        <div className="hero-kicker">
-          <span className="status-dot" />
-          {ko ? "01 / INTRO — 김시호" : "01 / INTRO — SIHO KIM"}
-          <span className="edition">WEB · SERVER · DATA</span>
+      <div className="opening-guide" aria-hidden="true">
+        <span>01 / INTRO</span>
+        <span>WEB · SERVER · DATA</span>
+      </div>
+      <div className="wrap opening-layout">
+        <div className="opening-topline">
+          <span className="eyebrow">
+            {ko ? "김시호 · 풀스택 개발자" : `${name} · FULL-STACK DEVELOPER`}
+          </span>
+          <span className="opening-edition">
+            PORTFOLIO / {new Date().getFullYear()}
+          </span>
         </div>
-        <div className="hero-grid">
-          <div className="hero-copy">
-            <h1 id="intro-title">{title}</h1>
-            <p className="hero-description">{subtitle}</p>
-            <div className="hero-actions">
-              <Link className="button primary" href="#projects">
-                {ko ? "프로젝트 살펴보기" : "Explore projects"}
-                <span aria-hidden="true">↘</span>
-              </Link>
-              <Link className="text-link" href="#about">
-                {ko ? "소개 보기" : "About me"}
-                <span aria-hidden="true">→</span>
-              </Link>
-            </div>
+        <div className="opening-title">
+          <h1 id="intro-title">{title}</h1>
+          <p>{subtitle}</p>
+        </div>
+        <div className="opening-bottom">
+          <div className="opening-actions">
+            <Link
+              href={featured ? "#featured" : "#projects"}
+              className="button primary"
+            >
+              {ko ? "프로젝트 살펴보기" : "Explore the work"}
+              <span aria-hidden="true">↘</span>
+            </Link>
+            <Link href="#about" className="text-link">
+              {ko ? "개발자 소개" : "About me"}
+              <span aria-hidden="true">→</span>
+            </Link>
           </div>
           {featured && (
-            <Link
-              className="hero-project"
-              href={`/${lang}/projects/${featured.slug}`}
-              aria-label={`${projectName(featured, lang)} ${ko ? "프로젝트 상세" : "project details"}`}
-            >
-              <div className="hero-project-top">
-                <span>PROJECT SPOTLIGHT</span>
+            <Link className="opening-next" href="#featured">
+              <span>
+                {ko ? "다음 장면" : "UP NEXT"}
+                <i>02</i>
+              </span>
+              <strong>
+                {projectName(featured, lang)}
                 <span aria-hidden="true">↗</span>
-              </div>
-              <div className="project-mark" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-                <i>{projectName(featured, lang).slice(0, 1)}</i>
-              </div>
-              <div className="hero-project-bottom">
-                <strong>{projectName(featured, lang)}</strong>
-                <span className="project-state">
-                  <i />
-                  {statusLabel(featured.status, lang)}
-                </span>
-              </div>
-              <p>{ko ? "프로젝트 자세히 보기" : "Explore the project"}</p>
+              </strong>
             </Link>
           )}
         </div>
-        <div className="hero-foot">
-          <span>
-            <strong>{name}</strong>Full-stack developer
-          </span>
-          {school && <span>{school}</span>}
-          <a href="#projects" className="scroll-link">
-            {ko ? "아래에서 더 보기" : "Scroll to explore"}
+        <div className="opening-footer">
+          <span>{school || name}</span>
+          <span>FULL-STACK DEVELOPMENT</span>
+          <a
+            href={featured ? "#featured" : "#projects"}
+            aria-label={ko ? "다음 섹션으로" : "Next section"}
+          >
             <span aria-hidden="true">↓</span>
           </a>
         </div>

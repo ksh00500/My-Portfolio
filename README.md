@@ -16,7 +16,9 @@ For a production-build preview, run `npm run build` followed by `npm run preview
 ## Presentation and content
 
 - Self-hosted Pretendard variable font, with its OFL license under `public/fonts/`; no external font CSS requests.
-- Cinematic dark surfaces, moving projector light, large sans-serif typography, film frames, section lighting, chapter navigation, and nonblocking scroll reveals. Responsive navigation, keyboard focus and reduced-motion support are retained.
+- Cinematic scene sequence: ink opening → forest featured project → light project archive → slate experience → blue engineering → amber awards → ink contact. The original section color and scroll concept is developed through distinct compositions rather than a uniform dark theme.
+- The featured project has three acts (overview, implementation, results), with a sticky visual that follows the active act on desktop. Mobile uses normal document flow. The page retains native scrolling, accessible scene links, reduced-motion support, and a separate print layout.
+- The opening uses large typography, a perspective light plane and a next-scene link instead of the former side card. Scroll progress changes the light's position; scene colors also carry through the navigation indicator.
 - Project search by name/description/role, translated status labels, clear filters, and missing-date handling.
 - Skills can be filtered by recorded proficiency and selected to inspect actual project links. The optional relationship map remains available.
 - Confirmed participation only in the public experience page. Unconfirmed program records remain in the database and administrator; they are not presented as achievements.

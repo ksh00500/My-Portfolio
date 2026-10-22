@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getPortfolioData } from "@/lib/repository";
 import { Hero } from "@/components/Hero";
+import { FeaturedSequence } from "@/components/FeaturedSequence";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Skills } from "@/components/Skills";
 import { CopyEmail, PrintResume } from "@/components/Contact";
@@ -60,16 +61,82 @@ export default async function Home({
         featured={featured}
         school={school}
       />
+      {featured && (
+        <section
+          className="feature-sequence-section"
+          id="featured"
+          data-chapter="02 / FEATURED"
+          data-scene-color="#b4d4b0"
+          data-scene-label={ko ? "대표작" : "Featured"}
+          aria-labelledby="featured-title"
+        >
+          <div className="wrap">
+            <div className="feature-sequence-heading">
+              <div>
+                <span className="eyebrow">02 / FEATURED PROJECT</span>
+                <h2 id="featured-title">{projectName(featured, lang)}</h2>
+              </div>
+              <div className="feature-sequence-caption">
+                <span>01 — 03</span>
+                <p>
+                  {ko
+                    ? "서비스, 구현, 결과. 세 장면으로 살펴보는 대표 프로젝트."
+                    : "The product, the implementation, and the results."}
+                </p>
+              </div>
+            </div>
+            <FeaturedSequence
+              lang={lang}
+              story={{
+                name: projectName(featured, lang),
+                slug: featured.slug,
+                summary: projectSummary(featured, lang),
+                description:
+                  (lang === "en"
+                    ? featured.description_en || featured.description
+                    : featured.description_ko || featured.description) || "",
+                role:
+                  (lang === "en"
+                    ? featured.role_en || featured.role
+                    : featured.role) || "",
+                period: projectPeriod(featured, lang),
+                status: statusLabel(featured.status, lang),
+                technologies: featuredTech.map((t) => t.name),
+                contributions:
+                  (lang === "en"
+                    ? featured.key_contributions_en ||
+                      featured.key_contributions
+                    : featured.key_contributions) || "",
+                result:
+                  (lang === "en"
+                    ? featured.result_summary_en || featured.result_summary
+                    : featured.result_summary) || "",
+                metrics: d.projectMetrics
+                  .filter((m) => m.project_id === featured.id)
+                  .map((m) => ({
+                    id: m.id,
+                    name: m.metric_name,
+                    value: m.display_value,
+                    verified: m.is_verified === true,
+                  })),
+                liveUrl: featured.live_url,
+              }}
+            />
+          </div>
+        </section>
+      )}
       <section
         className="section projects-section"
         id="projects"
-        data-chapter="02 / PROJECTS"
+        data-chapter="03 / PROJECTS"
+        data-scene-color="#456455"
+        data-scene-label={ko ? "프로젝트" : "Projects"}
         aria-labelledby="projects-title"
       >
         <div className="wrap">
           <div className="section-heading">
             <div>
-              <span className="eyebrow">02 / SELECTED WORK</span>
+              <span className="eyebrow">03 / SELECTED WORK</span>
               <h2 id="projects-title">{c("projects.title")}</h2>
             </div>
             <Link className="text-link" href={`/${lang}/projects`}>
@@ -78,74 +145,6 @@ export default async function Home({
               <span aria-hidden="true">↗</span>
             </Link>
           </div>
-          {featured && (
-            <article className="featured-project">
-              <div className="featured-copy">
-                <div className="featured-label">
-                  <span>{ko ? "대표 프로젝트" : "Featured project"}</span>
-                  <span className="project-state">
-                    <i />
-                    {statusLabel(featured.status, lang)}
-                  </span>
-                </div>
-                <h3>
-                  <Link href={`/${lang}/projects/${featured.slug}`}>
-                    {projectName(featured, lang)}
-                  </Link>
-                </h3>
-                <p className="featured-summary">
-                  {projectSummary(featured, lang)}
-                </p>
-                <dl className="project-facts">
-                  {featured.role && (
-                    <>
-                      <dt>{ko ? "담당 역할" : "Role"}</dt>
-                      <dd>
-                        {lang === "en" && featured.role_en
-                          ? featured.role_en
-                          : featured.role}
-                      </dd>
-                    </>
-                  )}
-                  <dt>{ko ? "개발 기간" : "Period"}</dt>
-                  <dd>{projectPeriod(featured, lang)}</dd>
-                  {featuredTech.length > 0 && (
-                    <>
-                      <dt>{ko ? "사용 기술" : "Stack"}</dt>
-                      <dd>{featuredTech.map((t) => t.name).join(" / ")}</dd>
-                    </>
-                  )}
-                </dl>
-                <Link
-                  href={`/${lang}/projects/${featured.slug}`}
-                  className="button light"
-                >
-                  {ko ? "프로젝트 자세히 보기" : "Read the case study"}
-                  <span aria-hidden="true">↗</span>
-                </Link>
-              </div>
-              <Link
-                href={`/${lang}/projects/${featured.slug}`}
-                className="featured-visual"
-                aria-label={`${projectName(featured, lang)} ${ko ? "상세 보기" : "details"}`}
-              >
-                <div className="feature-grid" />
-                <span className="visual-label">
-                  PROJECT / {featured.started_at?.slice(0, 4) || "WEB"}
-                </span>
-                <div className="feature-orbit" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-                <strong>{projectName(featured, lang)}</strong>
-                <span className="visual-caption">
-                  {ko ? "프로젝트 상세 보기" : "Explore the project"}
-                  <span aria-hidden="true">↗</span>
-                </span>
-              </Link>
-            </article>
-          )}
           <div className="project-grid">
             {selected.map((p, i) => (
               <ProjectCard
@@ -169,12 +168,14 @@ export default async function Home({
       <section
         className="section about-section"
         id="about"
-        data-chapter="03 / EXPERIENCE"
+        data-chapter="04 / EXPERIENCE"
+        data-scene-color="#aebedc"
+        data-scene-label={ko ? "경험" : "Experience"}
         aria-labelledby="about-title"
       >
         <div className="wrap about-grid">
           <div className="about-intro">
-            <span className="eyebrow">03 / ABOUT</span>
+            <span className="eyebrow">04 / ABOUT</span>
             <h2 id="about-title">{c("about.title")}</h2>
             <p>{c("about.description")}</p>
             <div className="about-links">
@@ -250,13 +251,15 @@ export default async function Home({
       <section
         className="section tech-section"
         id="tech"
-        data-chapter="04 / ENGINEERING"
+        data-chapter="05 / ENGINEERING"
+        data-scene-color="#a0d3e6"
+        data-scene-label={ko ? "기술" : "Technology"}
         aria-labelledby="skills-title"
       >
         <div className="wrap">
           <div className="section-heading">
             <div>
-              <span className="eyebrow">04 / TECHNICAL SKILLS</span>
+              <span className="eyebrow">05 / TECHNICAL SKILLS</span>
               <h2 id="skills-title">{c("tech.title")}</h2>
             </div>
             <p>{c("tech.description")}</p>
@@ -289,13 +292,15 @@ export default async function Home({
         <section
           className="section awards-section"
           id="recognition"
-          data-chapter="05 / RECOGNITION"
+          data-chapter="06 / RECOGNITION"
+          data-scene-color="#e2b886"
+          data-scene-label={ko ? "수상" : "Awards"}
           aria-labelledby="awards-title"
         >
           <div className="wrap">
             <div className="section-heading">
               <div>
-                <span className="eyebrow">05 / RECOGNITION</span>
+                <span className="eyebrow">06 / RECOGNITION</span>
                 <h2 id="awards-title">{c("recognition.title")}</h2>
               </div>
               <Link href={`/${lang}/recognition`} className="text-link">
@@ -341,7 +346,9 @@ export default async function Home({
       <footer
         className="contact-section"
         id="contact"
-        data-chapter="06 / CONTACT"
+        data-chapter="07 / CONTACT"
+        data-scene-color="#bad8c2"
+        data-scene-label={ko ? "연락" : "Contact"}
       >
         <div className="wrap">
           <span className="eyebrow">CONTACT</span>
