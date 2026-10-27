@@ -21,4 +21,15 @@ export function validToken(token:string|undefined){
 }
 export async function isAdmin(){const c=await cookies();return validToken(c.get(COOKIE)?.value)}
 export const adminCookie=COOKIE;
-export function safeOrigin(request:Request){const origin=request.headers.get('origin');return !origin||origin===new URL(request.url).origin;}
+// Behind a reverse proxy / Cloudflare Tunnel the app sees http://internal-host; the browser sends https://public-host.
+// Rebuild the public origin from X-Forwarded-* (browsers cannot set these cross-site without a failing CORS preflight).
+function publicOrigin(request:Request){
+ const h=request.headers,url=new URL(request.url),first=(v:string|null)=>v?.split(',')[0].trim()||null;
+ return `${first(h.get('x-forwarded-proto'))||url.protocol.slice(0,-1)}://${first(h.get('x-forwarded-host'))||h.get('host')||url.host}`;
+}
+export function isSecureRequest(request:Request){return publicOrigin(request).startsWith('https:')}
+export function safeOrigin(request:Request){
+ const origin=request.headers.get('origin');if(!origin)return true;
+ const allowed=(process.env.ALLOWED_ORIGINS||'').split(',').map(v=>v.trim()).filter(Boolean);
+ return origin===publicOrigin(request)||allowed.includes(origin);
+}

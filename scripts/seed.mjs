@@ -20,8 +20,10 @@ try{
  await put('profile',{id:'profile-main',...seed.profile});
  for(const p of seed.projects){
   const {media_assets,period_note_ko,period_note_en,brand_started_at,...rest}=p;
-  await put('projects',{...rest,started_at:validDate(rest.started_at),ended_at:validDate(rest.ended_at),planned_end_at:validDate(rest.planned_end_at),period_label:period_note_ko||null,description_en:period_note_en||null,brand_started_at:validDate(brand_started_at),
+  await put('projects',{...rest,started_at:validDate(rest.started_at),ended_at:validDate(rest.ended_at),planned_end_at:validDate(rest.planned_end_at),period_label:period_note_ko||null,period_label_en:period_note_en||null,brand_started_at:validDate(brand_started_at),
    planned_end_month:rest.planned_end_month||null});
+  // Earlier seeds wrote the English period note into description_en; move it back where it belongs.
+  if(period_note_en)await client.query('UPDATE projects SET description_en=NULL,period_label_en=COALESCE(period_label_en,$2) WHERE id=$1 AND description_en=$2',[rest.id,period_note_en]);
  }
  for(const [i,m] of seed.project_metrics.entries())await put('project_metrics',{
   id:'metric-'+String(i+1).padStart(3,'0'),project_id:m.project_id,metric_key:m.metric_key,
