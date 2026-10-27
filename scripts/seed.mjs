@@ -90,6 +90,10 @@ try{
   'senro.act1':{ko:'기획',en:'IDEA',group_name:'senro'},
   'senro.act2':{ko:'개발',en:'BUILD',group_name:'senro'},
   'senro.act3':{ko:'출시와 운영',en:'LAUNCH',group_name:'senro'},
+  // Optional per-act copy, edited from /admin → 화면 문구. Empty acts fall back to project data.
+  'senro.act1.body':{ko:null,en:null,group_name:'senro'},
+  'senro.act2.body':{ko:null,en:null,group_name:'senro'},
+  'senro.act3.body':{ko:null,en:null,group_name:'senro'},
   'tech.title':{ko:'사용한 기술과 연결된 작업',en:'Tools Behind the Work',group_name:'tech'},
   'tech.description':{ko:'원 크기는 해당 기술이 연결된 프로젝트 개수에 따라 달라집니다.',en:'Circle size is proportional to the number of linked projects.',group_name:'tech'},
   'recognition.title':{ko:'수상과 인증의 기록',en:'Honors & Recognition',group_name:'recognition'},
