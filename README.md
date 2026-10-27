@@ -93,7 +93,11 @@ scripts/seed.mjs                     원본을 SQL 테이블로 이관
 
 ## 현재 검증 상태
 
-SQL, JS, TS/TSX 소스 작성 및 파서 기반 문법 검사를 수행했다. 그러나 이 작업 환경에서는 npm 레지스트리와 Docker 데몬에 접근할 수 없어 **의존성 설치·Next.js 실제 빌드·PostgreSQL 연동 테스트는 수행하지 못했다**. 서버 실행 후 `docker compose logs -f`와 `/api/health`를 확인하고, `npm run typecheck` 및 실제 화면을 점검해야 한다.
+`npm run typecheck`, `npm run build`, `docker compose up --build`(PostgreSQL 16 + bootstrap + web)로 빌드·시드·공개 페이지·관리자 로그인/수정까지 실제로 확인했다. 리버스 프록시(HTTPS 터널) 뒤에서의 관리자 로그인도 `X-Forwarded-Proto/Host` 기준으로 확인했다.
+
+## 리버스 프록시 / Cloudflare Tunnel
+
+관리자 API의 Origin 검사는 `X-Forwarded-Proto`·`X-Forwarded-Host`(없으면 `Host`)로 공개 주소를 계산하고, HTTPS로 접속한 경우 세션 쿠키에 `Secure`를 붙인다. 프록시가 이 헤더를 넘기지 않는다면 `.env`의 `ALLOWED_ORIGINS`에 공개 주소(예: `https://portfolio.example.com`)를 지정한다.
 
 ## 운영 시점의 후속 작업
 

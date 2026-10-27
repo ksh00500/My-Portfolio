@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS projects (
  source_notion_id TEXT,is_public BOOLEAN NOT NULL DEFAULT TRUE,display_order INT NOT NULL DEFAULT 0,
  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
 CREATE INDEX IF NOT EXISTS projects_visible_order ON projects(is_public,display_order);
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS period_label_en TEXT;
 CREATE TABLE IF NOT EXISTS project_metrics (
  id TEXT PRIMARY KEY,project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
  metric_key TEXT NOT NULL,metric_name TEXT NOT NULL,numeric_value NUMERIC,
