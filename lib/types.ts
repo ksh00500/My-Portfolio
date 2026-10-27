@@ -9,4 +9,5 @@ export interface Participation {id:string;title:string;started_at:string|null;en
 export type Copy = Record<string,{ko:string|null;en:string|null}>;
 export interface PortfolioData {profile:Record<string,unknown>|null;projects:Project[];technologies:Technology[];projectTechnologies:Relation[];projectMetrics:Metric[];experiences:Experience[];recognitions:Recognition[];participations:Participation[];leadership:Record<string,unknown>[];employment:Record<string,unknown>[];education:Record<string,unknown>[];certifications:Record<string,unknown>[];mediaAssets:Record<string,unknown>[];assetLinks:Record<string,unknown>[];content:Copy;}
 export const translate=(content:Copy,key:string,lang:Locale,fallback='')=>content[key]?.[lang]||content[key]?.ko||fallback;
+export const projectName=(p:Project,lang:Locale)=>(lang==='en'&&p.name_en)||p.name;
 export const projectSummary=(p:Project,lang:Locale)=>p[`summary_${lang}`]||p.summary_ko||'';
