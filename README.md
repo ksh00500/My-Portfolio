@@ -2,6 +2,16 @@
 
 Next.js 16 + React 19 + TypeScript, PostgreSQL-backed public pages and administrator CRUD. The portfolio now focuses on full-stack internship/job applications: selected projects, role and implementation details, work and education, skills, awards, and contact. Korean/English routes and existing DB compatibility are retained.
 
+## Production deploy tracking
+
+The server runs `~/services/portfolio/deploy-portfolio.sh` outside this checkout.
+Its versioned source and isolated regression tests are `scripts/deploy-portfolio.sh`
+and `scripts/check-deploy.py`; see [deployment setup and retry rules](db/DEPLOYMENT.md).
+Deployment is skipped only when the recorded successful commit, running image/container,
+Docker health and both APIs match. Pulling Git first or retrying a failed deployment
+does not count as a successful deployment. The current production branch is
+`refactor/postgres17-live-schema-compat-20261021`, not `main`.
+
 ## Local design preview (no Docker or production database)
 
 ```bash
