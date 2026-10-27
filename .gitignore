@@ -4,6 +4,8 @@ node_modules
 .env.*
 !.env.example
 *.log
+coverage
 .DS_Store
 *.tsbuildinfo
+.backups/
 next-env.d.ts
