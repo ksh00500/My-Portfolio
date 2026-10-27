@@ -4,7 +4,7 @@ umask 077
 
 # Existing production checkout and Compose project. Never switch branches here.
 PROJECT_DIR="${PROJECT_DIR:-$HOME/services/portfolio/portfolio-next}"
-BRANCH="${BRANCH:-refactor/postgres17-live-schema-compat-20261021}"
+BRANCH="${BRANCH:-main}"
 COMPOSE_PROJECT="${COMPOSE_PROJECT:-portfolio-fullstack}"
 HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:3001/api/health}"
 PORTFOLIO_URL="${PORTFOLIO_URL:-http://127.0.0.1:3001/api/portfolio}"

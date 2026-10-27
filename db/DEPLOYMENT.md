@@ -1,9 +1,11 @@
 # 배포 성공 기록으로 변경 감지
 
 운영 배포 스크립트는 `/home/ksh/services/portfolio/deploy-portfolio.sh`이고,
-체크아웃은 `/home/ksh/services/portfolio/portfolio-next`이다. 현재 배포 브랜치는
-`refactor/postgres17-live-schema-compat-20261021`이며 `main`과 다르다.
-`main`에만 병합한 수정은 이 스크립트의 배포 대상이 아니다. 브랜치 변경은 별도로 검토한다.
+체크아웃은 `/home/ksh/services/portfolio/portfolio-next`이다. 기존 배포 브랜치는
+`refactor/postgres17-live-schema-compat-20261021`이었으며 `main`의 수정이 배포되지 않았다.
+수정본의 기본 배포 대상은 `main`이다. 이 통합본에는 기존 PostgreSQL 17 호환 코드와
+웹 전용 Compose, main의 프록시/빌드 수정이 함께 있다. 통합 PR이 main에 병합된 후
+서버 체크아웃도 main으로 바꾸고 이 스크립트를 설치한다. 기존 분기된 main을 바로 배포하지 않는다.
 
 기존 스크립트는 로컬 HEAD와 원격 SHA가 같으면 배포를 건너뛰었다.
 선행 `git pull`이나 빌드 실패 후에는 실제 컨테이너가 이전 코드여도 생략되는 문제다.
@@ -16,6 +18,7 @@
 - 컨테이너가 running/healthy이고 `/api/health`, `/api/portfolio`가 응답한다.
 
 성공 기록은 저장소 밖의 `~/services/portfolio/.deploy-state/portfolio-fullstack.json`이다.
+기록의 브랜치도 검사하므로 refactor에서 main으로 전환하면 다시 배포해 기록한다.
 기록이 없거나 손상됐으면 처음 한 번 다시 배포한다. 기존 HEAD를 성공 값으로 추정해 넣지 않는다.
 웹 빌드·교체·상태/API 검사 이후에만 같은 디렉터리의 임시 파일을 rename하여 기록한다.
 빌드/교체/검사에 실패하면 이전 성공 기록을 유지하고 `.pending`을 남긴다.

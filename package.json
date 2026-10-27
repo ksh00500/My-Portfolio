@@ -8,7 +8,7 @@
     "preview:production": "node scripts/preview.mjs --production",
     "build": "next build",
     "start": "next start --hostname 0.0.0.0",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "data:check": "node scripts/validate-seed.mjs",
     "db:verify": "node scripts/verify-existing-db.mjs",
     "check:static": "node scripts/static-contract-check.mjs",
@@ -19,7 +19,8 @@
     "db:snapshot": "node --env-file=.env scripts/backup-db.mjs",
     "check:snapshot": "node scripts/check-snapshot.mjs",
     "db:snapshot:ssh": "node scripts/backup-db-ssh.mjs",
-    "check:evidence": "node scripts/check-evidence.mjs"
+    "check:evidence": "node scripts/check-evidence.mjs",
+    "check:auth": "node scripts/check-auth.mjs"
   },
   "dependencies": {
     "next": "^16.0.0",

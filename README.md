@@ -9,8 +9,9 @@ Its versioned source and isolated regression tests are `scripts/deploy-portfolio
 and `scripts/check-deploy.py`; see [deployment setup and retry rules](db/DEPLOYMENT.md).
 Deployment is skipped only when the recorded successful commit, running image/container,
 Docker health and both APIs match. Pulling Git first or retrying a failed deployment
-does not count as a successful deployment. The current production branch is
-`refactor/postgres17-live-schema-compat-20261021`, not `main`.
+does not count as a successful deployment. The deployment default is `main`.
+Reconcile the existing PostgreSQL 17 compatibility branch into `main` before
+switching an existing server; do not deploy the older DB/bootstrap Compose stack.
 
 ## Local design preview (no Docker or production database)
 

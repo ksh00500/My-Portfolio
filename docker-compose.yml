@@ -10,6 +10,7 @@ services:
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL for existing portfolio-postgres on portfolio-net}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD}
       SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
     networks:
       - portfolio-net
     healthcheck:

@@ -21,9 +21,19 @@ export function validToken(token:string|undefined){
 }
 export async function isAdmin(){const c=await cookies();return validToken(c.get(COOKIE)?.value)}
 export const adminCookie=COOKIE;
-export function safeOrigin(request:Request){const origin=request.headers.get('origin');if(!origin)return true;
- try{const u=new URL(origin);if(!['https:','http:'].includes(u.protocol))return false;
- const site=request.headers.get('sec-fetch-site');if(site&&site!=='same-origin'&&site!=='none')return false;
- const hosts=[new URL(request.url).host,request.headers.get('host'),request.headers.get('x-forwarded-host')].filter(Boolean);
- return hosts.includes(u.host);
- }catch{return false}}
+// The loopback-bound app receives its public protocol/host from the trusted proxy.
+function publicOrigin(request:Request){
+ const h=request.headers,url=new URL(request.url),first=(v:string|null)=>v?.split(',')[0].trim()||null;
+ return `${first(h.get('x-forwarded-proto'))||url.protocol.slice(0,-1)}://${first(h.get('x-forwarded-host'))||h.get('host')||url.host}`;
+}
+export function isSecureRequest(request:Request){return publicOrigin(request).startsWith('https:')}
+export function safeOrigin(request:Request){
+ const origin=request.headers.get('origin');if(!origin)return true;
+ try{
+  const u=new URL(origin);if(!['https:','http:'].includes(u.protocol)||u.origin!==origin)return false;
+  const allowed=(process.env.ALLOWED_ORIGINS||'').split(',').map(v=>v.trim()).filter(Boolean);
+  if(allowed.includes(origin))return true;
+  const site=request.headers.get('sec-fetch-site');if(site&&site!=='same-origin'&&site!=='none')return false;
+  return origin===publicOrigin(request);
+ }catch{return false}
+}
