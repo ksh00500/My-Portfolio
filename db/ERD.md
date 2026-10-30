@@ -1,115 +1,198 @@
-# 포트폴리오 ERD — PostgreSQL v1
+# 포트폴리오 ERD — 운영 PostgreSQL 17
 
-2026-10-20 포트폴리오 명세서의 단일 원본·중복방지·공개 범위 원칙을 반영한 구현이다. 실제 SQL은 `db/schema.sql`이 단일 기준이며, 아래는 관계의 간략화된 표시다.
+기준: `db/live-schema.sql` (2026-10-30, 운영 `portfolio-postgres` 컨테이너에서 `pg_dump --schema-only`로 추출, PostgreSQL 17.11).
+이 파일이 실제 구조의 단일 기준이다. `db/schema.sql`은 초기 프로토타입(TEXT ID, `profile`, `site_content` 등)이며 운영 DB와 다르다.
+
+- 테이블 20개, 외래키 33개, `updated_at` 자동 갱신 트리거 14개(`portfolio_touch_updated_at()`).
+- 모든 PK는 `uuid DEFAULT gen_random_uuid()`. 조인 테이블 3개는 복합 PK.
+- 열거형 값은 모두 `CHECK (col = ANY (ARRAY[...]))` 제약으로 관리한다.
 
 ```mermaid
 erDiagram
-  profile {
-    text id PK
+  profiles {
+    uuid id PK
     text name_ko
     text name_en
+    text headline
+    text intro_title
+    text bio
+    text email
+    uuid profile_image_id FK
   }
   projects {
-    text id PK
+    uuid id PK
     text slug UK
     text name
+    text summary
+    text description
+    text content_markdown
+    text project_type
     text status
     boolean is_featured
     date started_at
     date ended_at
   }
+  project_aliases {
+    uuid id PK
+    uuid project_id FK
+    text alias
+    text alias_type
+  }
   project_metrics {
-    text id PK
-    text project_id FK
+    uuid id PK
+    uuid project_id FK
     text metric_key
     text display_value
+    boolean is_verified
   }
   technologies {
-    text id PK
+    uuid id PK
     text name UK
     text category
     text proficiency
   }
   project_technologies {
-    text project_id PK, FK
-    text technology_id PK, FK
-    numeric effort_weight
-    text verification_status
+    uuid project_id PK, FK
+    uuid technology_id PK, FK
+    text usage_note
+    boolean is_primary
+  }
+  technology_evidence {
+    uuid id PK
+    uuid technology_id FK
+    uuid experience_id FK
+    uuid recognition_id FK
+    uuid participation_id FK
+    uuid education_id FK
+    uuid employment_id FK
+    uuid leadership_id FK
+    uuid certification_id FK
+    text evidence_kind
+    text evidence_note
   }
   experiences {
-    text id PK
+    uuid id PK
     text name
     text category
+    text status
+    boolean is_ongoing "generated"
     date started_at
   }
-  recognitions {text id PK
-    text experience_id FK
-    text related_project_id FK
+  project_experiences {
+    uuid project_id PK, FK
+    uuid experience_id PK, FK
+    text relationship_type
   }
-  leadership {text id PK
-    text experience_id FK
+  recognitions {
+    uuid id PK
+    uuid experience_id FK, UK
+    uuid related_project_id FK
+    uuid evidence_asset_id FK
+    text recognition_type
+    text award_name
   }
-  participations {text id PK
-    text experience_id FK
+  certifications {
+    uuid id PK
+    uuid experience_id FK, UK
+    text name
+    text status
   }
-  employment {text id PK
-    text experience_id FK
+  education {
+    uuid id PK
+    uuid experience_id FK, UK
+    text school_name
+    text status
   }
-  education {text id PK
-    text experience_id FK
+  employment {
+    uuid id PK
+    uuid experience_id FK, UK
+    text company_name
   }
-  certifications {text id PK
-    text experience_id FK
+  leadership {
+    uuid id PK
+    uuid experience_id FK, UK
+    uuid related_project_id FK
+    text activity_name
   }
-  project_experiences {text project_id PK, FK
-    text experience_id PK, FK
+  participations {
+    uuid id PK
+    uuid experience_id FK, UK
+    uuid related_project_id FK
+    text title
+    text attendance_status
   }
-  media_assets {text id PK
-    text external_url
-    text storage_key
-  }
-  asset_links {text id PK
-    text asset_id FK
-    text entity_type
-    text entity_id
-  }
-  tags {text id PK
+  tags {
+    uuid id PK
     text name UK
   }
-  experience_tags {text experience_id PK, FK
-    text tag_id PK, FK
+  experience_tags {
+    uuid experience_id PK, FK
+    uuid tag_id PK, FK
   }
-  goals {text id PK
+  goals {
+    uuid id PK
     text title
+    text status
   }
-  site_content {text key PK
-    text ko
-    text en
+  media_assets {
+    uuid id PK
+    text media_type
+    text storage_key
+    text external_url
   }
-  projects ||--o{ project_metrics : metrics
-  projects ||--o{ project_technologies : uses
-  technologies ||--o{ project_technologies : used_in
-  projects ||--o{ project_experiences : linked_to
-  experiences ||--o{ project_experiences : includes
-  experiences ||--o| recognitions : award_detail
-  experiences ||--o| leadership : leadership_detail
-  experiences ||--o| participations : participation_detail
-  experiences ||--o| employment : work_detail
-  experiences ||--o| education : education_detail
-  experiences ||--o| certifications : certification_detail
-  projects |o--o{ recognitions : award_related
-  media_assets ||--o{ asset_links : assigned_to
-  experiences ||--o{ experience_tags : tagged
-  tags ||--o{ experience_tags : used_by
+  asset_links {
+    uuid id PK
+    uuid asset_id FK
+    uuid profile_id FK
+    uuid project_id FK
+    uuid experience_id FK
+    uuid recognition_id FK
+    uuid certification_id FK
+    text asset_role
+  }
+
+  projects ||--o{ project_aliases : "aliases (CASCADE)"
+  projects ||--o{ project_metrics : "metrics (CASCADE)"
+  projects ||--o{ project_technologies : "uses (CASCADE)"
+  technologies ||--o{ project_technologies : "used in (CASCADE)"
+  projects ||--o{ project_experiences : "linked (CASCADE)"
+  experiences ||--o{ project_experiences : "linked (CASCADE)"
+  experiences ||--o| recognitions : "detail (SET NULL)"
+  experiences ||--o| certifications : "detail (SET NULL)"
+  experiences ||--o| education : "detail (SET NULL)"
+  experiences ||--o| employment : "detail (SET NULL)"
+  experiences ||--o| leadership : "detail (SET NULL)"
+  experiences ||--o| participations : "detail (SET NULL)"
+  projects |o--o{ recognitions : "related (SET NULL)"
+  projects |o--o{ leadership : "related (SET NULL)"
+  projects |o--o{ participations : "related (SET NULL)"
+  technologies ||--o{ technology_evidence : "evidence (RESTRICT)"
+  experiences |o--o{ technology_evidence : "source (RESTRICT)"
+  recognitions |o--o{ technology_evidence : "source (RESTRICT)"
+  participations |o--o{ technology_evidence : "source (RESTRICT)"
+  education |o--o{ technology_evidence : "source (RESTRICT)"
+  employment |o--o{ technology_evidence : "source (RESTRICT)"
+  leadership |o--o{ technology_evidence : "source (RESTRICT)"
+  certifications |o--o{ technology_evidence : "source (RESTRICT)"
+  experiences ||--o{ experience_tags : "tagged (CASCADE)"
+  tags ||--o{ experience_tags : "used by (CASCADE)"
+  media_assets ||--o{ asset_links : "linked (CASCADE)"
+  profiles |o--o{ asset_links : "target (CASCADE)"
+  projects |o--o{ asset_links : "target (CASCADE)"
+  experiences |o--o{ asset_links : "target (CASCADE)"
+  recognitions |o--o{ asset_links : "target (CASCADE)"
+  certifications |o--o{ asset_links : "target (CASCADE)"
+  media_assets |o--o{ profiles : "profile image (SET NULL)"
+  media_assets |o--o{ recognitions : "evidence asset (SET NULL)"
 ```
 
-## 구현 원칙
+## 구조상 특징
 
-- `project_technologies`의 관계는 **실제 프로젝트 사용이 확인된 경우에만** `confirmed`로 입력한다. 기술 분포도의 원 크기는 해당 기술의 `confirmed` 프로젝트 개수이다.
-- `effort_weight`는 추후 선택적으로 사용할 상대 기여도 필드(0~100)다. 지금 시각화의 원 크기를 부풀리지 않는다.
-- `recognitions`의 수상/장학/배지는 `recognition_type`으로 구분하며, `certifications`는 취득 자격증만 별도 조회한다.
-- `experiences`는 통합 마스터 테이블이다. 아직 원본 통합 이력 47건의 모든 상세 데이터가 제공된 것이 아니므로 **임의로 47건을 생성하지 않는다**. 참여 상태가 검증되지 않은 31개 원본 프로그램 항목은 `participations`에 별도로 보존한다.
-- `asset_links`는 다형성(`entity_type`, `entity_id`) 연결이다. DB 수준 외래키가 아닌 애플리케이션 레벨 참조이므로 편집 시 대상 ID를 확인해야 한다.
-- ID는 원본 시안의 안정적인 `project-01`, `tech-01` 형태를 그대로 보존하기 위해 `TEXT`로 사용했다. 나중에 UUID로 교체하더라도 `source_notion_id`를 잃지 않는다.
-- `site_content`에서 히어로, 소개, 챕터 제목, 엔딩 문구를 한국어/영어로 관리한다. 디자인 컬러, 상태명 등 UI 상수는 코드에 둔다.
-- `is_public`, `source_code_visibility`, `verification_status`는 서로 독립적이다.
+- **경력 계열은 마스터-상세 구조.** `experiences`가 통합 이력이고 `recognitions`·`certifications`·`education`·`employment`·`leadership`·`participations`가 `experience_id`(UNIQUE, 1:1)로 붙는다. 상세 행은 마스터 없이도 존재할 수 있다(`experience_id` nullable, 삭제 시 SET NULL).
+- **배타적 다중 대상(exclusive arc).** `asset_links`는 5개 대상 중 정확히 하나(`asset_links_one_target_chk`), `technology_evidence`는 7개 출처 중 정확히 하나(`technology_evidence_check`)를 가리킨다.
+- **다국어 컬럼은 `profiles.name_en` 하나뿐.** 프로젝트·기술·경력·수상의 이름과 설명은 단일 언어 컬럼(`name`, `summary`, `description`, `title`, `award_name` …)만 있다.
+- **화면 문구 테이블(`site_content`)과 감사 로그 테이블은 없다.**
+- **열거형 표기가 섞여 있다.** 소문자 snake_case(`status`, `technologies.category`), Title Case(`experiences.category`, `projects.project_type`, `date_precision`, `linkedin_sync_status`)가 공존한다.
+- **Notion 이관 흔적.** 대부분 테이블에 `source_notion_id`(UNIQUE)가 있다.
+- `experiences.is_ongoing`은 `status = 'ongoing'`에서 계산되는 생성 컬럼이다.
+- 트리거가 없는 테이블: `asset_links`, `project_aliases`(`updated_at` 없음), 조인 테이블 3개(타임스탬프 없음).

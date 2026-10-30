@@ -1,8 +1,8 @@
 # Operating PostgreSQL 17 compatibility — no DB changes
 
-The running DB is authoritative. The bundled `db/schema.sql` and `db/ERD.md` describe an *older candidate schema*, not an instruction to initialize production. They must **never** be run against the existing data without explicit approval.
+The running DB is authoritative. Its structure is captured in `db/live-schema.sql` (schema-only `pg_dump`, 2026-10-30) and summarized in `db/ERD.md`. The bundled `db/schema.sql` describes an *older candidate schema*, not an instruction to initialize production. They must **never** be run against the existing data without explicit approval.
 
-Observed differences reported from the live deployment (not independently queried here):
+Differences between the old application assumptions and the live DB (confirmed against `db/live-schema.sql`):
 
 | Old application assumption | Existing DB | Change |
 |--|--|--|
