@@ -77,4 +77,7 @@
   - SENRO 2026 축제: `experiences`(연성대학교 2026 축제 — SENRO 게임 부스 운영)와 `participations`(2026 연성대학교 축제 — SENRO 게임 체험·홍보 부스 운영)는 같은 축제 운영 → 활동 하나로 합친다(2026 축제는 하나).
   - `setstop`: 2026, 팀장. 본때 — 2026 축제 부스 게임 개발 팀장 + 2026 축제 둘 다 연결.
   - `cannonball`: 2025, 팀원. 2025 축제(2025 연성대학교 양지대동제 게임 체험 부스 게임 개발) 연결. `store_url` = https://store.steampowered.com/app/4442940/Cannon_Ball/?l=koreana
-  - `skillmcp`: "OpenAI WebMCP 챌린지"와 연결(`entered`). 현재 DB에 해당 활동이 없어 새로 만든다 — 세부 정보는 소유자 확인 필요.
+  - 2026 축제 활동 이름을 **"연성대학교 2026 축제"**로 일반화. 표 6에 `note_ko/en`(연결 메모) 칸 추가:
+    senro `showcased` "SENRO 게임 체험·홍보 부스 운영" · setstop `developed_at` "본때 C팀 축제 타이머 게임 부스" · setstop ↔ 본때 — 2026 축제 부스 게임 개발 팀장 `developed_at`.
+  - `cannonball`: 역할 "팀원 · UI·시스템 개발". 본때 동아리 활동(컴소과 동아리 [본때])에도 연결. 2025 축제 날짜 2025-10-16 ~ 2025-10-17.
+  - 새 활동 **OpenAI WebMCP Challenge** (kind `competition`, 결과: 참가) — 주최 OpenAI(후원 Google Chrome·Cloudflare·Shopify·Vercel·Render·Netlify), Devpost 제출, 기간 2026-08-25 ~ 2026-09-04(제출 마감 2026-09-04 00:00 UTC = 09:00 KST). 출처: https://community.openai.com/t/the-webmcp-challenge-is-here/1392582 · `skillmcp` ↔ 이 활동 `entered`.
