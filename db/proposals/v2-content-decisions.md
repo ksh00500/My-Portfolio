@@ -45,3 +45,6 @@
 - `lessons_learned`(회고) → `lessons_ko/en`으로 유지. `team_label` → `team_label_ko/en`으로 유지(소유자가 입력).
 - 빈 값(예: code-review 역할, 인원)은 관리자 화면이 생긴 뒤 소유자가 입력.
 - 소유자 요청: 관리자 화면에서 DB 값을 보며 빈칸을 채울 수 있어야 한다.
+- 기여·성과·기술 스택 문장·회고는 **각각 별도 칸**(`contributions_*`, `results_*`, `tech_note_*`, `lessons_*`)으로 유지. 상세 페이지에서는 한 본문 영역 안에서 칸마다 문단으로 나눠 보여준다.
+- `martial-roguelike`: 이름 **무록 / MuLog**, 부제 "탑뷰 액션 무협 로그라이크". 옛 이름 "무협 로그라이크"는 `project_aliases`(previous_name)로.
+- `skillmcp`: 부제 "WEB에서 세팅하는 MCP 스킬북". "WEBMCP-OpenAi"는 `project_aliases`(repository_name)로.
