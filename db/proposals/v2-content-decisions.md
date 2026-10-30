@@ -81,3 +81,6 @@
     senro `showcased` "SENRO 게임 체험·홍보 부스 운영" · setstop `developed_at` "본때 C팀 축제 타이머 게임 부스" · setstop ↔ 본때 — 2026 축제 부스 게임 개발 팀장 `developed_at`.
   - `cannonball`: 역할 "팀원 · UI·시스템 개발". 본때 동아리 활동(컴소과 동아리 [본때])에도 연결. 2025 축제 날짜 2025-10-16 ~ 2025-10-17.
   - 새 활동 **OpenAI WebMCP Challenge** (kind `competition`, 결과: 참가) — 주최 OpenAI(후원 Google Chrome·Cloudflare·Shopify·Vercel·Render·Netlify), Devpost 제출, 기간 2026-08-25 ~ 2026-09-04(제출 마감 2026-09-04 00:00 UTC = 09:00 KST). 출처: https://community.openai.com/t/the-webmcp-challenge-is-here/1392582 · `skillmcp` ↔ 이 활동 `entered`.
+  - `skillmcp` 시작일 **2026-08-25**(챌린지 시작일 기준, 소유자 결정). 기존 근거 "GitHub repository creation (KST)" 2026-09-04는 `source_refs`에 기록으로 남김. 기간 메모: "2026.08.25 챌린지 시작 ~ 2026.09 말 운영 종료(실제 서버 종료일 추정)".
+
+## 표 6 확정 (2026-10-30)
