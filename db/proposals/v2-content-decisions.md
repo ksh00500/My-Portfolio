@@ -56,8 +56,19 @@
 
 ## 표 5. `project_metrics` (2026-10-30, 확정)
 
-- 지표 이름 영어 확정: Total users / Registered members / Android app downloads (total) / Current Android app installs / Meeting participants / Meetings held with the app / Model F1 score (from report).
+- 지표 이름 영어 확정: Total users / Registered members / Android app downloads (total) / Current Android app installs / Users / Meetings held with the app / Model F1 score (from report).
 - 재측정 없음 — 측정일·값 유지.
 - 값은 **문자가 아닌 숫자 타입**(`numeric`)으로 저장하고 소수도 허용(F1 0.88 등). 화면 표시 값은 숫자·비교·단위에서 자동 생성((a)안). 정수 전용 제약은 두지 않는다.
 - F1 지표는 유지(팀 프로젝트 결과로 표시).
 - Postit Meeting `approx_participants`: 이름 **사용자 / Users**, 값 **8 (exact)**. 메모: 내부적으로 사용, 소유자가 직접 확인한 사용자 수. 공식 분석 로그는 없으므로 `is_verified`는 false 유지.
+
+## 표 6. `project_activities` (2026-10-30)
+
+- `relation` 값 통일: `entered`(출품) · `developed_at`(활동 중 개발) · `work`(업무) · `showcased`(전시·부스) · `other`. 표시 이름은 코드에서 한·영 변환.
+- 상세 페이지에 "관련 활동"으로 **표시**한다.
+- 현재 DB에 흩어진 연결을 모두 이 표로 모은다:
+  - `project_experiences` 4건 — florence `entered`, fresk `developed_at`(캠프에서 처음 만듦), nrctech-ddss `work`, senro `showcased`
+  - `leadership.related_project_id` 1건 — setstop ↔ 본때 — 2026 축제 부스 게임 개발 팀장
+  - `participations.related_project_id` 2건 — senro ↔ 2026 연성대학교 축제 — SENRO 게임 체험·홍보 부스 운영, cannonball ↔ 2025 연성대학교 양지대동제 게임 체험 부스 게임 개발
+- 수상과의 연결(G-HOP 최우수상 ↔ fresk)은 성과 표의 `project_id`로 유지.
+- 설계 추가 예정: 수강 과목 표(`courses`)가 생기면 프로젝트–과목 연결(`project_courses`)도 둔다. 연결 대상은 소유자가 지정.
