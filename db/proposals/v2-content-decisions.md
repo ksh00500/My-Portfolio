@@ -48,3 +48,8 @@
 - 기여·성과·기술 스택 문장·회고는 **각각 별도 칸**(`contributions_*`, `results_*`, `tech_note_*`, `lessons_*`)으로 유지. 상세 페이지에서는 한 본문 영역 안에서 칸마다 문단으로 나눠 보여준다.
 - `martial-roguelike`: 이름 **무록 / MuLog**, 부제 "탑뷰 액션 무협 로그라이크". 옛 이름 "무협 로그라이크"는 `project_aliases`(previous_name)로.
 - `skillmcp`: 부제 "WEB에서 세팅하는 MCP 스킬북". "WEBMCP-OpenAi"는 `project_aliases`(repository_name)로.
+
+## 표 4. `project_aliases` (2026-10-30)
+
+- 화면·검색 어디에도 **노출하지 않는 내부 기록**. 공개 API에서도 제외. `is_public` 칸 불필요.
+- 9행: 기존 8행 + 무록의 옛 이름 "무협 로그라이크"(previous_name). `updated_at` 추가.
