@@ -77,6 +77,8 @@ erDiagram
     date start_date
     date end_date
     text date_precision
+    text period_note_ko
+    text period_note_en
     text role_ko
     text role_en
     int team_size
@@ -228,7 +230,7 @@ erDiagram
 | 현재 | v2 | 처리 |
 |---|---|---|
 | `profiles` (1) | `profile` + `profile_links` | URL 5개 → 링크 행. 학교·학과는 education 활동에서 가져온다 |
-| `projects` (19) | `projects` | description·key_contributions·result_summary·tech_stack_summary를 소제목이 있는 마크다운 `body_ko`로 합친다(글자 손실 없음) |
+| `projects` (19) | `projects` | `description`은 19개 모두 `summary`와 같은 문장이라 제거. key_contributions·result_summary·tech_stack_summary는 소제목이 있는 마크다운 `body_ko`로 합친다(글자 손실 없음). `period_label`은 날짜 외 메모가 있어 `period_note_ko/en`으로 유지 |
 | `project_aliases` (8), `project_metrics` (7) | 동일 | metrics에 `label_en` 추가 |
 | `project_experiences` (4) | `project_activities` | |
 | `technologies` (33) | `technologies` | `description_en` 추가 |

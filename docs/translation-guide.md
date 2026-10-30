@@ -38,4 +38,5 @@
 
 | 한국어 | 영어 | 메모 |
 |---|---|---|
-| | | |
+| 산소를 전달하는 적혈구 (소개 제목) | bring oxygen to every team | 활력을 불어넣고 사람·팀을 잇는다는 내장된 의미. 적혈구는 영어에서 의학적으로 들려 생략 |
+| 전공심화 4학년 과정 | 4th-year advanced major program for a bachelor's degree | 3년제 과정은 associate degree |
