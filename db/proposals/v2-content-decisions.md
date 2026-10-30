@@ -84,3 +84,8 @@
   - `skillmcp` 시작일 **2026-08-25**(챌린지 시작일 기준, 소유자 결정). 기존 근거 "GitHub repository creation (KST)" 2026-09-04는 `source_refs`에 기록으로 남김. 기간 메모: "2026.08.25 챌린지 시작 ~ 2026.09 말 운영 종료(실제 서버 종료일 추정)".
 
 ## 표 6 확정 (2026-10-30)
+
+## 표 7. `technologies` (2026-10-30, 진행 중)
+
+- 묶여 있던 기술을 **전부 하나씩 분리** (33 → 47개): TypeScript/JavaScript, HTML/CSS, Node.js/Fastify, Android/Capacitor, AWS EC2/S3/RDS/Lambda, Docker/Nginx, Git/GitHub, Notion/Slack, Adobe Photoshop/Illustrator/XD, MCP/WebMCP, LightGBM/XGBoost.
+- 분리 후 프로젝트 연결은 각 프로젝트의 기술 스택 문장(`tech_stack_summary`)을 근거로 제안하고 소유자가 확정한다.
