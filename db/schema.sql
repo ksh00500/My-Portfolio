@@ -1,4 +1,5 @@
 -- LEGACY PROTOTYPE SCHEMA. NOT COMPATIBLE WITH EXISTING PostgreSQL 17. DO NOT APPLY TO PRODUCTION.
+-- The live structure is db/live-schema.sql.
 -- Portfolio v1: PostgreSQL 16+, idempotent initial schema.
 -- Uses stable TEXT identifiers so exported IDs and later UUIDs can coexist.
 CREATE TABLE IF NOT EXISTS profile (
