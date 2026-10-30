@@ -58,3 +58,5 @@
 
 - 지표 이름 영어 확정: Total users / Registered members / Android app downloads (total) / Current Android app installs / Meeting participants / Meetings held with the app / Model F1 score (from report).
 - 재측정 없음 — 측정일·값 유지.
+- 표시 값은 숫자·비교·단위에서 자동 생성((a)안). 명·회처럼 셀 수 있는 지표는 정수만 허용.
+- Postit Meeting `approx_participants`: 이름 **사용자 / Users**, 값 **8 (exact)**. 메모: 내부적으로 사용, 소유자가 직접 확인한 사용자 수. 공식 분석 로그는 없으므로 `is_verified`는 false 유지.
