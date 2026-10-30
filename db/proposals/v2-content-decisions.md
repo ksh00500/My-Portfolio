@@ -54,9 +54,10 @@
 - 화면·검색 어디에도 **노출하지 않는 내부 기록**. 공개 API에서도 제외. `is_public` 칸 불필요.
 - 9행: 기존 8행 + 무록의 옛 이름 "무협 로그라이크"(previous_name). `updated_at` 추가.
 
-## 표 5. `project_metrics` (2026-10-30, 진행 중)
+## 표 5. `project_metrics` (2026-10-30, 확정)
 
 - 지표 이름 영어 확정: Total users / Registered members / Android app downloads (total) / Current Android app installs / Meeting participants / Meetings held with the app / Model F1 score (from report).
 - 재측정 없음 — 측정일·값 유지.
-- 표시 값은 숫자·비교·단위에서 자동 생성((a)안). 명·회처럼 셀 수 있는 지표는 정수만 허용.
+- 값은 **문자가 아닌 숫자 타입**(`numeric`)으로 저장하고 소수도 허용(F1 0.88 등). 화면 표시 값은 숫자·비교·단위에서 자동 생성((a)안). 정수 전용 제약은 두지 않는다.
+- F1 지표는 유지(팀 프로젝트 결과로 표시).
 - Postit Meeting `approx_participants`: 이름 **사용자 / Users**, 값 **8 (exact)**. 메모: 내부적으로 사용, 소유자가 직접 확인한 사용자 수. 공식 분석 로그는 없으므로 `is_verified`는 false 유지.
